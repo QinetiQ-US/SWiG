@@ -75,7 +75,7 @@ for time = 0:timeIncrement:timeToRun
                 requiresAck = (tester < pRequiresAck);
                 packet = packetClass(nodes{i}.getModulator,i,destination,requiresAck,msgNum,0,message);
                 nodes{i}.pushPacketsToSend(packet);
-                sentPacketInfo = [sentPacketInfo;[msgNum requiresAck time modulatorIndex(packet.getModulator)]];
+                sentPacketInfo = [sentPacketInfo;[msgNum requiresAck time modulatorIndex(packet.getModulator) length(message)]];
             end
         end
     end

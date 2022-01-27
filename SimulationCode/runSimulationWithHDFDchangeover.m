@@ -33,10 +33,10 @@ for i=1:length(HDMessageList)
     msgData = messagesForHD{i};
     HDMessageList{i} = packetClass(nodes{sendHDnodeNumber}.getModulator,sendHDnodeNumber,receiveHDnodeNumber,0,HDID,-1,msgData);
     %add to sentPacketInfo
-    sentPacketInfo = [sentPacketInfo;[HDID 0 timeToDoHD modulatorForHD]];
+    sentPacketInfo = [sentPacketInfo;[HDID 0 timeToDoHD modulatorForHD length(msgData) 1.0]];
     HDID = HDID + 1;
 end
-holdoffInterval = [timeToDoHD timeToDoHD+durationForHD+120];  %don't do any messaging in FD on HD tx/rx channels during this time
+holdoffInterval = [timeToDoHD timeToDoHD+durationForHD+10]+60;  %don't do any messaging in FD on HD tx/rx channels during this time
 
 HDchannelTriggered = false;
 
@@ -97,6 +97,12 @@ for time = 0:timeIncrement:timeToRun
                     if destination ~= i
                         running = false;
                     end
+                    %but don't send to HD transmitter during operation,
+                    %either
+                    if time >= holdoffInterval(1) && time <= holdoffInterval(2) && ...
+                            (destination == sendHDnodeNumber)
+                        running = true;
+                    end
                 end
                 msgNum = msgNum + 1;
                 message = randi(2,nodes{i}.getModulator.getPacketLength,1) - 1;  %random bitstream
@@ -106,7 +112,7 @@ for time = 0:timeIncrement:timeToRun
                 requiresAck = (tester < pRequiresAck);
                 packet = packetClass(nodes{i}.getModulator,i,destination,requiresAck,msgNum,0,message);
                 nodes{i}.pushPacketsToSend(packet);
-                sentPacketInfo = [sentPacketInfo;[msgNum requiresAck time modulatorIndex(packet.getModulator)]];
+                sentPacketInfo = [sentPacketInfo;[msgNum requiresAck time modulatorIndex(packet.getModulator) length(message) packet.getModulator.bandwidthFraction]];
             end
         end
     end

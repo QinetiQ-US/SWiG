@@ -1,6 +1,6 @@
 ModulatorList = {
     SWIGModulator(false,false)
-    genericDSSSModulator(false,false)
+    genericDSSSModulator(false,true)
     SWIGPrimitiveModulator(false,true)
     QPSKModulator(false,false)
     };
@@ -54,7 +54,7 @@ for repIndex = 1:length(repeaterNumberToTest)
     nodes = cell(numNodes,1);
     for i = 1:numNodes
         nodes{i}=nodeClass(locations(i,:),ModulatorList,i,maxQueueDepth); %#ok<*SAGROW>
-        nodes{i}.setModulator(2);  %Half-duplex DSSS modulator without CSMA
+        nodes{i}.setModulator(3);  %Primitive SWiG
     end
     %set up the store and forward tables
     %go get the nodes closest to the desired repeater points

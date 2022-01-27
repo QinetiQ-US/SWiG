@@ -7,8 +7,8 @@ classdef QPSKModulator < modulatorClass
 
     methods
         function obj = QPSKModulator(fullDuplex,CSMA)
-            topBitrate = 1e4/1.2;
-            packetLength = 250;
+            packetLength = 1206;
+            topBitrate = (10e3*2*packetLength/(2047*1.2))*1.2;
             preambleCollisionFatal = false;
             centerFrequency = 25e3;
             maxBandwidth = 10e3;
@@ -17,6 +17,12 @@ classdef QPSKModulator < modulatorClass
             obj = obj@modulatorClass(topBitrate,packetLength,preambleCollisionFatal,fullDuplex,...
                 CSMA, centerFrequency,maxInterference,nominalPreambleDuration,maxBandwidth);
         end
+
+        function result = getPacketDuration(obj)
+            result = (obj.packetLength/(obj.topBitrate * obj.bandwidthFraction)) + ...
+                (obj.nominalPreambleDuration / obj.bandwidthFraction);
+        end
+
 
         function modulatorType = getModulatorType(obj)
             modulatorType.style = 'QPSK';

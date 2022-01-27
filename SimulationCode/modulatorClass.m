@@ -47,10 +47,6 @@ classdef modulatorClass < matlab.mixin.Copyable
             result = obj.CSMA;
         end
 
-        function obj = setbandwidthFraction(obj,bandwidthFraction)
-            obj.bandwidthFraction = bandwidthFraction;
-        end
-
         function result = getBandwidthFraction(obj)
             result = obj.bandwidthFraction;
         end
