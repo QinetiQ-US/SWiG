@@ -554,12 +554,21 @@ classdef nodeClass < handle
                 signal = 10^(-0.1*thisPacket.getModulator.attenuation(...
                     thisPacket.getPacketDelay));
                 interference = baseInterference;
+                startTime = thisPacket.getPacketStart + ...
+                    thisPacket.getPacketDelay;
+                endTime = startTime + thisPacket.getPacketDuration;
                 for j = 1:length(unfinishedPackets)
                     if (i ~= j) %packet can't interfere with itself
                         thatPacket = packets(unfinishedPackets(j));
+                        startThat = thatPacket.getPacketStart + thatPacket.getPacketDelay;
+                        endThat = startThat + thatPacket.getPacketDuration;
+                        overlapFraction = (min(endThat,endTime)-max(startThat,startTime))/thisPacket.getPacketDuration;
+                        if overlapFraction<0
+                            overlapFraction = 0;
+                        end
                         interferenceFraction = thisPacket.getModulator.getBandOverlapFraction(thatPacket.getModulator);
                         interference = interference + 10^(-0.1*thatPacket.getModulator.attenuation(...
-                            thatPacket.getPacketDelay))*interferenceFraction;
+                            thatPacket.getPacketDelay))*interferenceFraction*overlapFraction;
                     end
                 end
                 if interference > 0 %don't invalidate for interference if there is none

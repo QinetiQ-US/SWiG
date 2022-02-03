@@ -7,13 +7,13 @@ classdef genericDSSSModulator < modulatorClass
 
     methods
         function obj = genericDSSSModulator(fullDuplex,CSMA)
-            topBitrate = 110;
-            packetLength = 49;
+            topBitrate = 1024;
+            packetLength = 128;
             preambleCollisionFatal = false;
             centerFrequency = 15e3;
             maxBandwidth = 10e3;
-            maxInterference = 20;   %in dB
-            nominalPreambleDuration = 1023 * 1.2 / 1e4;
+            maxInterference = 10*log10(maxBandwidth/topBitrate)-3;  %Eb/I_0 must be at least 3 dB
+            nominalPreambleDuration = 255 * 1.2 / 1e4;
             obj = obj@modulatorClass(topBitrate,packetLength,preambleCollisionFatal,fullDuplex,...
                 CSMA, centerFrequency,maxInterference,nominalPreambleDuration,maxBandwidth);
         end

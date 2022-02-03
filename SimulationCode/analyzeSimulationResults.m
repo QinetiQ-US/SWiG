@@ -24,8 +24,10 @@ results.FDnumAckRequiredMessagesLost = 0;
 FDtotalBits = 0;
 FDduringHDBits = 0;
 FDOutsideHDBits = 0;
+ackRequired = false(length(FDsentPacketInfo),1);
 for i=1:length(FDsentPacketInfo)
     which = find(FDsentPacketInfo(i,1)==receivedPacketInfo(:,1),1,'first');
+    ackRequired(i) = sentPacketInfo(i,2) ~= 0;
     if ~isempty(which)
         latencies(i) = receivedPacketInfo(which,3) - FDsentPacketInfo(i,3);
         FDtotalBits = FDtotalBits + FDsentPacketInfo(i,5);
@@ -43,30 +45,32 @@ for i=1:length(FDsentPacketInfo)
         end
     end
 end
-goodLatencies = latencies(isfinite(latencies));
-results.FDmeanLatency = mean(goodLatencies);
-results.FDsigmaLatency = std(goodLatencies);
-results.FDmedianLatency = median(goodLatencies);
-results.FDmaxLatency = max(goodLatencies);
-results.FDminLatency = min(goodLatencies);
-results.FDrawLatency = sort(goodLatencies);
+ack = latencies(isfinite(latencies) & ackRequired);
+nack = latencies(isfinite(latencies)& ~ackRequired);
+results.FDmeanLatency = [mean(nack) mean(ack)];
+results.FDsigmaLatency = [std(nack) std(ack)];
+results.FDmedianLatency = [median(nack) median(ack)];
+results.FDmaxLatency = [max(nack) max(ack)];
+results.FDminLatency = [min(nack) min(ack)];
+results.FDrawLatency = sort(latencies);
 results.FDThroughput = FDtotalBits/range(FDsentPacketInfo(:,3));
-
-%now handle HD channel
-HDsentPacketInfo = sentPacketInfo(sentPacketInfo(:,1)>=1e5,:);
-%first, find number of messages sent
-results.HDnumMessagesSent = size(HDsentPacketInfo,1);
-%find number of lost messages
-results.HDnumMessagesLost = 0;
-HDtotalBits = 0;
-for i=1:length(HDsentPacketInfo)
-    which = find(HDsentPacketInfo(i,1)==receivedPacketInfo(:,1),1,'first');
-    if isempty(which)
-        results.HDnumMessagesLost = results.HDnumMessagesLost + 1;
-    else
-        HDtotalBits = HDtotalBits + HDsentPacketInfo(i,5);
+if HD
+    %now handle HD channel
+    HDsentPacketInfo = sentPacketInfo(sentPacketInfo(:,1)>=1e5,:);
+    %first, find number of messages sent
+    results.HDnumMessagesSent = size(HDsentPacketInfo,1);
+    %find number of lost messages
+    results.HDnumMessagesLost = 0;
+    HDtotalBits = 0;
+    for i=1:length(HDsentPacketInfo)
+        which = find(HDsentPacketInfo(i,1)==receivedPacketInfo(:,1),1,'first');
+        if isempty(which)
+            results.HDnumMessagesLost = results.HDnumMessagesLost + 1;
+        else
+            HDtotalBits = HDtotalBits + HDsentPacketInfo(i,5);
+        end
     end
+    results.FDNoHDThroughput = FDOutsideHDBits/(range(FDsentPacketInfo(:,3)) - (endHD - startHD));
+    results.FDDuringHDThroughput = FDduringHDBits / (endHD - startHD);
+    results.HDThroughput = HDtotalBits / (endHD - startHD);
 end
-results.FDNoHDThroughput = FDOutsideHDBits/(range(FDsentPacketInfo(:,3)) - (endHD - startHD));
-results.FDDuringHDThroughput = FDduringHDBits / (endHD - startHD);
-results.HDThroughput = HDtotalBits / (endHD - startHD);
