@@ -27,7 +27,7 @@ FDOutsideHDBits = 0;
 ackRequired = false(length(FDsentPacketInfo),1);
 for i=1:length(FDsentPacketInfo)
     which = find(FDsentPacketInfo(i,1)==receivedPacketInfo(:,1),1,'first');
-    ackRequired(i) = sentPacketInfo(i,2) ~= 0;
+    ackRequired(i) = FDsentPacketInfo(i,2) ~= 0;
     if ~isempty(which)
         latencies(i) = receivedPacketInfo(which,3) - FDsentPacketInfo(i,3);
         FDtotalBits = FDtotalBits + FDsentPacketInfo(i,5);

@@ -1,6 +1,6 @@
 ModulatorList = {
-    genericDSSSModulator(false,false)
     genericDSSSModulator(true,false)
+    genericDSSSModulator(false,false)
     genericDSSSModulator(false,true)
     SWIGPrimitiveModulator(false,true)
     SWIGModulator(false,false)
