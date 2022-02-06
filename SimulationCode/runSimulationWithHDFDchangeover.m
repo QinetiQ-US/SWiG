@@ -15,7 +15,19 @@ function [sentPacketInfo,receivedPacketInfo] = runSimulationWithHDFDchangeover(n
 %                           Poisson, but on queued messages
 
 
-
+%figure out if FD modulator is SWiG or DSSS
+baseModulator = nodes{1}.getModulator;
+type = baseModulator.getModulatorType;
+style = type.style;
+if ~contains(style,'SW')
+    %DSSS
+    FcenterSlow = 14e3;
+    BWSlow = 0.9;
+else
+    %SWiG either primitive or other
+    FcenterSlow = 18795;
+    BWSlow = 0.25;
+end
 
 
 receivedPacketInfo = [];
@@ -36,7 +48,7 @@ for i=1:length(HDMessageList)
     sentPacketInfo = [sentPacketInfo;[HDID 0 timeToDoHD modulatorForHD length(msgData) 1.0]];
     HDID = HDID + 1;
 end
-holdoffInterval = [timeToDoHD timeToDoHD+durationForHD+10]+60;  %don't do any messaging in FD on HD tx/rx channels during this time
+holdoffInterval = [timeToDoHD-10 timeToDoHD+durationForHD+10];  %don't do any messaging in FD on HD tx/rx channels during this time
 
 HDchannelTriggered = false;
 
@@ -48,9 +60,9 @@ for time = 0:timeIncrement:timeToRun
         tPrint = time + 299.99;
     end
     %trigger off the node that will be doing HD
-    if ~HDchannelTriggered && time > timeToDoHD
-        nodes{sendHDnodeNumber}.scheduleHDChannelEvent(timeToDoHD,durationForHD,1:length(nodes),18795,...
-            0.25,receiveHDnodeNumber,25000,1.0,modulatorForHD,HDMessageList);
+    if ~HDchannelTriggered && time > timeToDoHD - 120  %send early to allow for all ACKs to finish
+        nodes{sendHDnodeNumber}.scheduleHDChannelEvent(timeToDoHD,durationForHD,1:length(nodes),FcenterSlow,...
+            BWSlow,receiveHDnodeNumber,25000,1.0,modulatorForHD,HDMessageList);
         HDchannelTriggered = true;
     end
 

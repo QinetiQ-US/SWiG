@@ -178,7 +178,7 @@ classdef nodeClass < handle
         function obj = scheduleHDChannelEvent(obj,time,duration,fullNodeList,newFDcenterFrequency,...
                 newFDbandwidthFraction,HDDestination,HDCenterFrequency,HDBandwidthFraction,HDmodulatorIndex,HDMessageList)
             obj.FDeventStructure.state = obj.FDHDwaitingAsHDnode;  %waiting to grab the channel
-            obj.FDeventStructure.timeToStart = time + 2*obj.ACKrebroadcastTime +5;  %wait a long time before starting
+            obj.FDeventStructure.timeToStart = time; %
             obj.FDeventStructure.timeToEnd = obj.FDeventStructure.timeToStart + duration;
             obj.FDeventStructure.fullNodeList = fullNodeList;
             obj.FDeventStructure.newFDcenterFrequency = newFDcenterFrequency;

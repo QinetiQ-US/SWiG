@@ -1,13 +1,14 @@
 ModulatorList = {
     SWIGPrimitiveModulator(false,true)
-    genericDSSSModulator(true,false)
     SWIGModulator(false,true)
+    genericDSSSModulator(false,false)
+    genericDSSSModulator(true,false)
     QPSKModulator(false,false)
     };
 nodeRange = 2000;
 numNodes = 8;
 results=cell(3,1);
-parfor modulatorIndex = 1:3
+parfor modulatorIndex = 1:4
     rng(0);
     locations=nodeRange*rand(numNodes,3);
     %make vertical range much smaller
@@ -22,7 +23,7 @@ parfor modulatorIndex = 1:3
     end
     timeToRun = 1200;
     timeToFinish = 60;  %how much time to stay quiet at the end to let things finish
-    timeIncrement = 0.025;  %10 mSec
+    timeIncrement = 0.0125;  %10 mSec
     poissonSendInterval = 1/0.06;   %on average one message per node per minute
     pAckNeeded = 0.1;           %on average 10% of messages require ACK
 
@@ -38,7 +39,7 @@ parfor modulatorIndex = 1:3
     end
     durationForHD = length(messagesForHD)*myMod.getPacketDuration;
     durationForHD = durationForHD + 5.0;  %buffer time
-    modulatorForHD = 4;  %QPSK
+    modulatorForHD = 5;  %QPSK
     rng(0);
     [sentPacketInfo,receivedPacketInfo] = runSimulationWithHDFDchangeover(nodes,timeToRun,...
         timeToFinish,timeIncrement,poissonSendInterval,pAckNeeded,sendHDnodeNumber,receiveHDnodeNumber,...

@@ -6,7 +6,6 @@ function results = analyzeSimulationResults(sentPacketInfo,receivedPacketInfo,st
 %determine if any HD usage
 if nargin > 3
     HD = true;
-    startHD = startHD + 65;  %buffer for setup
     endHD = startHD + durationOfHD;
 else
     HD = false;
@@ -32,7 +31,7 @@ for i=1:length(FDsentPacketInfo)
         latencies(i) = receivedPacketInfo(which,3) - FDsentPacketInfo(i,3);
         FDtotalBits = FDtotalBits + FDsentPacketInfo(i,5);
         if HD
-            if FDsentPacketInfo(i,6)>0.5
+            if FDsentPacketInfo(i,6)>0.95
                 FDOutsideHDBits = FDOutsideHDBits + FDsentPacketInfo(i,5);
             else
                 FDduringHDBits = FDduringHDBits + FDsentPacketInfo(i,5);
