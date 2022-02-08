@@ -1,3 +1,8 @@
+%> @brief Class for generic DSSSmodulator
+%> @details Implements a modulator based on SWiG level expected behavior of
+% > generic DSSS modulator/demodulator, including interference,
+%> parallel/serial cancellation and 
+%>ability to demodulate and decode multiple messages simultaneously
 classdef genericDSSSModulator < modulatorClass
     %SWIGModulator Characterizes the SWIG physical transmission
     %
@@ -6,6 +11,10 @@ classdef genericDSSSModulator < modulatorClass
     end
 
     methods
+        %> @brief Constructor
+        %> @param [in] fullDuplex - boolean describing if self-cancelling
+        %> @param [in] CSMA - boolean indicating if must wait for no carrier
+        %> before sending
         function obj = genericDSSSModulator(fullDuplex,CSMA)
             topBitrate = 1024;
             packetLength = 511;
@@ -19,6 +28,12 @@ classdef genericDSSSModulator < modulatorClass
                 CSMA, centerFrequency,maxInterference,nominalPreambleDuration,maxBandwidth);
         end
 
+        %> @brief Function to describe the modulator
+        %> @param [in] obj - the modulator object
+        %> @retval modulatorType - a struct with the following fields:<br>
+        %> style - a string with the modulator name ('DSSS')<br>
+        %> bandwidth - a double between 0 and 1 indicating fractional
+        %>bandwidth
         function modulatorType = getModulatorType(obj)
             modulatorType.style = 'DSSS';
             modulatorType.bandwidth = obj.bandwidthFraction;
@@ -26,6 +41,12 @@ classdef genericDSSSModulator < modulatorClass
     end
 
     methods(Static)
+        %> @brief stochastic packet validity function
+        %> @details Decides whether to fail a packet based solely on random
+        %> behavior of fixed packet loss, plus a sigmoid loss function at
+        %>range
+        %> @param [in] delay - propagation time in seconds
+        %> @retval result - true if packet valid, false otherwise
         function result = packetValid(delay)
             distance = delay * 1500;
             pOops = 0.05;  %5% chance of drop no matter what
@@ -41,6 +62,10 @@ classdef genericDSSSModulator < modulatorClass
             check = rand(1);
             result = check < pOkay;
         end
+        %> @brief attenuation function for DSSS
+        %> @param [in] delay - propagation time in seconds from transmitter
+        %> to receiver
+        %> @retval result - attenuation in dB
         function result = attenuation(delay)
             %r^2 attenuation
             distance = delay*1500;  %meters

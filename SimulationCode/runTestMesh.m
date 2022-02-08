@@ -1,3 +1,5 @@
+%> @brief Example script to run multiple mesh network
+%> simulations 
 ModulatorList = {
     genericDSSSModulator(true,false)
     genericDSSSModulator(false,false)

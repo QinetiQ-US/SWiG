@@ -1,3 +1,5 @@
+%> @brief Example script to run multiple store-and-forward network
+%> simulations simultaneously
 ModulatorList = {
     genericDSSSModulator(true,false)
     genericDSSSModulator(false,false)

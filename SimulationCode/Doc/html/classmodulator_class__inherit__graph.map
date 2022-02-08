@@ -1,0 +1,9 @@
+<map id="modulatorClass" name="modulatorClass">
+<area shape="rect" id="node1" title="Modulator class &#45; Abstract class." alt="" coords="169,80,281,107"/>
+<area shape="rect" id="node3" href="$class_q_p_s_k_modulator.html" title="QPSK high&#45;speed HD modulator/demodulator." alt="" coords="5,155,121,181"/>
+<area shape="rect" id="node4" href="$classgeneric_d_s_s_s_modulator.html" title="Class for generic DSSSmodulator." alt="" coords="146,155,303,181"/>
+<area shape="rect" id="node5" href="$classmid_band_modulator_class.html" title="base class for SWiG type modulators" alt="" coords="327,155,490,181"/>
+<area shape="rect" id="node2" title=" " alt="" coords="143,5,306,32"/>
+<area shape="rect" id="node6" href="$class_s_w_i_g_modulator.html" title="Class for SWIG modulator." alt="" coords="270,229,385,256"/>
+<area shape="rect" id="node7" href="$class_s_w_i_g_primitive_modulator.html" title="Class for SWIG primitive modulator." alt="" coords="409,229,571,256"/>
+</map>

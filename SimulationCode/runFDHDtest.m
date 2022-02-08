@@ -1,3 +1,5 @@
+%> @brief Example script to run multiple FD/HD network
+%> simulations simultaneously
 ModulatorList = {
     SWIGPrimitiveModulator(false,true)
     SWIGModulator(false,true)

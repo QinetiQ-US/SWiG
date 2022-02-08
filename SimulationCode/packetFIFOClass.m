@@ -1,13 +1,20 @@
+%> @brief FIFO class for nodes
 classdef packetFIFOClass < handle
 
     properties
+        %> circular array of packets
         queue;
+        %> index for front of circular buffer
         front;
+        %> index for back of circular buffer
         back;
+        %> length of circular buffer
         maxNum;
     end
 
     methods
+        %> @brief packetFIFOClass constructor
+        %> @param [in] maxQueued length of circular buffer
         function obj = packetFIFOClass(maxQueued)
             obj.maxNum = uint32(maxQueued);
             fakePacket = packetClass(SWIGModulator(false,false),0,1,false,0,0,randi(2,20,1)-1);
@@ -16,6 +23,10 @@ classdef packetFIFOClass < handle
             obj.back = uint32(0);
         end
         
+        %> @brief push function for FIFO
+        %> @param [in] obj - the FIFO object
+        %> @param [in] packet - the packet to be pushed
+        %> @retval obj - the modified FIFO object
         function obj = push(obj,packet)
             %see if we've overflowed
             if (obj.back - obj.front) >= obj.maxNum
@@ -27,6 +38,10 @@ classdef packetFIFOClass < handle
             end
         end
 
+        %> @brief pop a packet off the FIFO
+        %> @param [in] obj - the FIFO object
+        %> @retval message - the first out message ([] if FIFO empty)
+        %> @retval obj - the modified FIFO object
         function [message, obj] = pop(obj)
             if (obj.front >= obj.back)  %FIFO empty
                 message=[];
@@ -37,6 +52,9 @@ classdef packetFIFOClass < handle
             end
         end
 
+        %> @brief oldest packet in FIFO
+        %> @param [in] obj - the FIFO object
+        %> @retval result - the oldest packet ([] if FIFO empty)
         function result = head(obj)
             if obj.isEmpty
                 result = [];
@@ -46,6 +64,9 @@ classdef packetFIFOClass < handle
             end
         end
 
+        %> @brief is the FIFO empty?
+        %> @param [in] obj - the FIFO object
+        %> @retval result - true if the FIFO empty, otherwise false
         function result = isEmpty(obj)
             result = (obj.front == obj.back);
         end

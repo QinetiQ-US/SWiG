@@ -1,0 +1,7 @@
+<map id="midBandModulatorClass" name="midBandModulatorClass">
+<area shape="rect" id="node1" title="base class for SWiG type modulators" alt="" coords="63,155,225,181"/>
+<area shape="rect" id="node4" href="$class_s_w_i_g_modulator.html" title="Class for SWIG modulator." alt="" coords="5,229,120,256"/>
+<area shape="rect" id="node5" href="$class_s_w_i_g_primitive_modulator.html" title="Class for SWIG primitive modulator." alt="" coords="144,229,307,256"/>
+<area shape="rect" id="node2" href="$classmodulator_class.html" title="Modulator class &#45; Abstract class." alt="" coords="88,80,200,107"/>
+<area shape="rect" id="node3" title=" " alt="" coords="63,5,225,32"/>
+</map>

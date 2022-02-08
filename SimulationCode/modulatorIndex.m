@@ -1,3 +1,10 @@
+%> @brief unique number for each modulator type
+%> @param [in] modulator - a modulator object
+%> @retval result - an index based on the modulator type:<br>
+%> 1 for SWIGModulator<br>
+%> 2 for genericDSSSModulator<br>
+%> 3 for SWIGPrimitiveModulator<br>
+%> 4 for QPSKModulator
 function result = modulatorIndex(modulator)
 
 persistent modulatorTable;

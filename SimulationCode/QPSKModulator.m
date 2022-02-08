@@ -1,11 +1,15 @@
+%> @brief QPSK high-speed HD modulator/demodulator
 classdef QPSKModulator < modulatorClass
-    %SWIGModulator Characterizes the SWIG physical transmission
     %
 
     properties
     end
 
     methods
+        %> @brief Constructor
+        %> @param [in] fullDuplex - boolean describing if self-cancelling
+        %> @param [in] CSMA - boolean indicating if must wait for no carrier
+        %> before sending
         function obj = QPSKModulator(fullDuplex,CSMA)
             packetLength = 1206;
             topBitrate = (10e3*2*packetLength/(2047*1.2))*1.2;
@@ -18,6 +22,9 @@ classdef QPSKModulator < modulatorClass
                 CSMA, centerFrequency,maxInterference,nominalPreambleDuration,maxBandwidth);
         end
 
+        %> @brief access packet duration
+        %> @param [in] obj - the modulator object
+        %> @retval result - duration in seconds
         function result = getPacketDuration(obj)
             result = (obj.packetLength/(obj.topBitrate * obj.bandwidthFraction)) + ...
                 (obj.nominalPreambleDuration / obj.bandwidthFraction);
@@ -46,6 +53,7 @@ classdef QPSKModulator < modulatorClass
             check = rand(1);
             result = check < pOkay;
         end
+
         function result = attenuation(delay)
             %r^2 attenuation
             distance = delay*1500;  %meters
@@ -54,6 +62,8 @@ classdef QPSKModulator < modulatorClass
             atten2 = 4.9*0.001*distance;  %4.9 dB/km @ 24 kHz midband
             result = atten1 + atten2;
         end
+
+        %> @brief default boolean for is HD modulator - true
         function result = isHDModulator
             result = true;
         end

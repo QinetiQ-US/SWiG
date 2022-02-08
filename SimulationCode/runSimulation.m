@@ -1,3 +1,17 @@
+%> @brief runs simulation with FD only
+%>
+%> @param [in] nodes is a cell array containing the nodes in the network
+%> @param [in] timeToRun is duration in seconds for complete run
+%> @param [in] timeToFinish is how long in seconds to end transmitting to allow network to finish
+%> @param [in] timeIncrement is increment time in seconds for simulation
+%> @param [in] poissonSendInterval is lambda in seconds for average packet
+%> @param [in] pAckNeeded is probability any given message is critical
+%> @retval sentPacketInfo an N x 6 consisting of
+%>  message number, logical for ACK needed, time packet was sent, modulator
+%> index for the message, message length in bits, and fractional bandwidth
+%> @retval receivedPacketInfo an M x 3 array consisting of
+%> message ID, message ID for packet this is an ACK for (0 if none), time
+%> received
 function [sentPacketInfo,receivedPacketInfo] = runSimulation(nodes,timeToRun,...
     timeToFinish,timeIncrement,poissonSendInterval,pAckNeeded)
 % function [sentPacketInfo,receivedPacketInfo] = runSimulation(nodes,timeToRun,...

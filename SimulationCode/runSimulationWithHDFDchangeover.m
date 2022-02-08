@@ -1,3 +1,29 @@
+%> @brief runs simulation with changeover from FD only to FD/HD
+%> @details Uses node and modulator setup to order a pre-programmed switchover.
+%> System begins simulation with FD only, then issues a configuration set
+%> of messages 120 seconds prior to desired switchover to ensure proper
+%> acknowledgment of switchover. Then switchover occurs, high speed
+%> messages are exchanged while low speed continues at reduced bit rate.
+%> Finally, reconfigures back to FD only
+%>
+%> @param [in] nodes is a cell array containing the nodes in the network
+%> @param [in] timeToRun is duration in seconds for complete run
+%> @param [in] timeToFinish is how long in seconds to end transmitting to allow network to finish
+%> @param [in] timeIncrement is increment time in seconds for simulation
+%> @param [in] poissonSendInterval is lambda in seconds for average packet
+%> @param [in] pAckNeeded is probability any given message is critical
+%> @param [in] sendHDnodeNumber is the node number for the HD sender
+%> @param [in] receiveHDnodeNumber is the node number for the HD receiver
+%> @param [in] timeToDoHD time in seconds to begin HD operation
+%> @param [in] durationForHD time in seconds to run before reconfiguration
+%> @param [in] messagesForHD cell array of the bit array messages for HD
+%> @param [in] modulatorForHD integer index into modulator array for the nodes
+%> @retval sentPacketInfo an N x 6 consisting of
+%>  message number, logical for ACK needed, time packet was sent, modulator
+%> index for the message, message length in bits, and fractional bandwidth
+%> @retval receivedPacketInfo an M x 3 array consisting of
+%> message ID, message ID for packet this is an ACK for (0 if none), time
+%> received
 function [sentPacketInfo,receivedPacketInfo] = runSimulationWithHDFDchangeover(nodes,timeToRun,...
     timeToFinish,timeIncrement,poissonSendInterval,pAckNeeded,sendHDnodeNumber,receiveHDnodeNumber,...
     timeToDoHD, durationForHD, messagesForHD,modulatorForHD)
@@ -124,7 +150,7 @@ for time = 0:timeIncrement:timeToRun
                 requiresAck = (tester < pRequiresAck);
                 packet = packetClass(nodes{i}.getModulator,i,destination,requiresAck,msgNum,0,message);
                 nodes{i}.pushPacketsToSend(packet);
-                sentPacketInfo = [sentPacketInfo;[msgNum requiresAck time modulatorIndex(packet.getModulator) length(message) packet.getModulator.bandwidthFraction]];
+                sentPacketInfo = [sentPacketInfo;[msgNum requiresAck time modulatorIndex(packet.getModulator) length(message) packet.getModulator.getBandwidthFraction]];
             end
         end
     end

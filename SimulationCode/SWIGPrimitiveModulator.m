@@ -1,3 +1,6 @@
+%> @brief Class for SWIG primitive modulator
+%> @details Implements a modulator based on SWiG level with, with no
+%>ability to demodulate and decode multiple messages simultaneously
 classdef SWIGPrimitiveModulator < midBandModulatorClass
     %SWIGModulator Characterizes the SWIG physical transmission
     %   
@@ -6,6 +9,10 @@ classdef SWIGPrimitiveModulator < midBandModulatorClass
     end
 
     methods
+        %> @brief Constructor
+        %> @param [in] fullDuplex - boolean describing if self-cancelling
+        %> @param [in] CSMA - boolean indicating if must wait for no carrier
+        %> before sending
         function obj = SWIGPrimitiveModulator(fullDuplex,CSMA)
             topBitrate = 110;
             packetLength = 49;
@@ -18,6 +25,12 @@ classdef SWIGPrimitiveModulator < midBandModulatorClass
                 CSMA, centerFrequency,maxInterference,nominalPreambleDuration,maxBandwidth);
         end
 
+        %> @brief Function to describe the modulator
+        %> @param [in] obj - the modulator object
+        %> @retval modulatorType - a struct with the following fields:<br>
+        %> style - a string with the modulator name ('SWiGPrimitive')<br>
+        %> bandwidth - a double between 0 and 1 indicating fractional
+        %>bandwidth
         function modulatorType = getModulatorType(obj)
             modulatorType.style = 'SWiGPrimitive';
             modulatorType.bandwidth = obj.bandwidthFraction;

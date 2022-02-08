@@ -1,0 +1,6 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" title=" " alt="" coords="5,56,65,83"/>
+<area shape="rect" id="node2" href="$classnode_class.html" title="node class" alt="" coords="137,5,220,32"/>
+<area shape="rect" id="node3" href="$classpacket_deque_class.html" title="deque class for packets also holds information whether packet is valid" alt="" coords="113,56,244,83"/>
+<area shape="rect" id="node4" href="$classpacket_f_i_f_o_class.html" title="FIFO class for nodes." alt="" coords="117,107,240,133"/>
+</map>

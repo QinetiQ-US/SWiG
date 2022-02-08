@@ -1,39 +1,86 @@
+%> @brief node class
+%> @details class characterizing a modulator/demodulator with logic for
+%> transmitting, receiving, routing, scheduling transitions between FD/HD,
+%> validating packets, etc.
 classdef nodeClass < handle
 
     %constants used to define state machine for FD <-> HD
     properties(Constant)
+        %> constant used to define state machine for FD <-> HD - idle
         FDHDidle = 0;
+        %> constant used to define state machine for FD <-> HD - waiting as
+        %> HD node
         FDHDwaitingAsHDnode = 1;
+        %> constant used to define state machine for FD <-> HD - waiting as
+        %> HD node
         FDHDwaitingAsFDnode = 2;
+        %> constant used to define state machine for FD <-> HD - actively
+        %> running as HD
         FDHDactiveAsHDnode = 3;
+        %> constant used to define state machine for FD <-> HD - actively
+        %> running ad FD node
         FDHDactiveAsFDnode = 4;
+        %> constant used to define state machine for FD <-> HD - handling
+        %> configuration message
         FDHDchannelConfigMsgID = -3;  %special, special, special
     end
 
     properties
+        %> array of modulators for the node
         modulators;
+        %> index of selected modulator
         activeModulator;
+        %> ID number for this node
         ID;
+        %> FIFO of packets to send
         packetFIFOtoSend;
+        %> Deque of packets we are actively receiving
         packetDequeReceiving;
+        %> Array with a store and forward table
         storeAndForwardTable;
+        %> Array with a mesh routing table
         meshRouteTable;
+        %> packet object we are currently sending
         sendingPacket;
-        access;
+        %>  3 x 1 (x,y,z) location of node in meters
         location;
+        %> time to next check to see if carrier present for CSMA
         timeToCheckCSMA;
+        %> bool indicating we are in wait for free carrier for CSMA
         waitingCSMA;
+        %> deque of packets that are awaiting an ACK (so as not to
+        %> rebroadcast)
         packetDequeAwaitingAck;
+        %> deque of packets that have been relayed (so as not to
+        %> rebroadcast)
         packetDequeRelayed;
+        %> deque of packets that have been ACKED (so as not to rebroadcast)
         packetDequeAcked;
+        %> array of times when we remove ACK information
         ACKremovalAge;
+        %> array of times when we will rebroadcast if no ACK received
         ACKrebroadcastTime;
-        HSMessageList;
+        %> full list of node numbers we have discovered
         completeListOfNodes;
+        %> structure containing configuration information for FD/HD
+        %>events.  Elements:<br>
+        %>rememberedBandwidthFraction <br>
+        %> rememberedCenterFrequency<br>
+        %> timeToStar<br>
+        %> timeToEnd<br>
+        %> newFDcenterFrequency<br>
+        %> newFDbandwidthFraction<br>
+        %> state<br>
         FDeventStructure;
     end
 
     methods
+        %> @brief nodeClass constructor
+        %> @param [in] location - 3x1 (x,y,z) location of node in meters
+        %> @param [in] modulators - cell array of modulator objects
+        %> supported by this node
+        %> @param [in] ID - integer ID number for this node
+        %> @param [in] sendQueueDepth - number of elements for sending FIFO
         function obj = nodeClass(location,modulators,ID,sendQueueDepth)
             obj.location = location;
             obj.storeAndForwardTable = [];
@@ -57,35 +104,68 @@ classdef nodeClass < handle
             obj.FDeventStructure.state = obj.FDHDidle;  %nothing happening here
         end
 
+        %> @brief get location of node
+        %> @param [in] obj - node object
+        %> @retval result - 3 x1 location of node
         function result = getLocation(obj)
             result = obj.location;
         end
 
+        %> @brief set mesh routing table for node
+        %> @param [in] obj - the node object
+        %> @param [in] table - a routing table array
+        %> @retval obj - modified node object
         function obj = setMeshRouteTable(obj,table)
             obj.meshRouteTable = table;
         end
 
+        %> @brief set store and forward table for node
+        %> @param [in] obj - the node object
+        %> @param [in] storeAndForwardTable - a store and forward table array
+        %> @retval obj - modified node object
         function obj = setStoreAndForwardTable(obj,storeAndForwardTable)
             obj.storeAndForwardTable = storeAndForwardTable;
         end
 
+        %> @brief get propagation time between two nodes
+        %> @param [in] obj - this node
+        %> @param [in] node - other node
+        %> @retval result - propagation time between nodes
         function result = getDelay(obj,node)
             delta = obj.location - node.getLocation;
             result = norm(delta)/1500;
         end
 
+        %> @brief set bandwidth fraction of active modulator
+        %> @param [in] obj - the node object
+        %> @param [in] fraction - the bandwidth fraction to set
+        %> @retval obj - modified node object
         function obj = setBandwidthFraction(obj,fraction)
             obj.activeModulator.setBandwidthFraction(fraction);
         end
 
+        %> @brief set center frequency for active modulator
+        %> @param [in] obj - the node object
+        %> @param [in] centerFrequency - the new center frequency in Hz
+        %> @retval obj - modifie node object
         function obj = setCenterFrequency(obj,centerFrequency)
             obj.activeModulator.setCenterFrequency(centerFrequency);
         end
 
+        %> @brief get list of messages still awaiting ACK
+        %> @param [in] obj - the node object
+        %> @retval result - array of packets still awaiting ACK
         function result =getUnacknowledgeMessages(obj)
             result = obj.packetDequeAwaitingAck.packets;
         end
 
+        %> @brief handle received FD/HD configuration messages
+        %> @details If configuration message, and it's for us, set the
+        %> event structure
+        %> @param [in] obj - the node object
+        %> @param [in] packets - array of packets containging config
+        %> messages
+        %> @retval obj - modified node object with updated event structure
         function obj = handleReceivedFDConfigurationMessages(obj,packets)
             for i = 1:length(packets)
                 packet = packets(i);
@@ -103,6 +183,13 @@ classdef nodeClass < handle
             end
         end
 
+        %> @brief handle FD/HD configuration changes
+        %> @details - state machine for changing modulators, bandwidths,
+        %> center frequencies, HD/FD channel mode based on configuration
+        %> structure and present time
+        %> @param [in] obj - node object
+        %> @param [in] time - present time in seconds
+        %> @retval modified node object
         function obj = handleFDConfigurationChanges(obj,time)
             switch obj.FDeventStructure.state
                 case obj.FDHDwaitingAsFDnode  %FD node waiting, if it's time -> active, reconfigure new FD
@@ -136,6 +223,10 @@ classdef nodeClass < handle
             end
         end
 
+        %> @brief Am I sending right now?
+        %> @param [in] obj - the node object
+        %> @param [in] time - present time in seconds
+        %> @retval result - boolean: am I sending?
         function result = isSending(obj,time)
             if obj.sendingPacket.getPacketStart < 0  %nope, not even trying
                 result = false;
@@ -154,6 +245,13 @@ classdef nodeClass < handle
             end
         end
 
+        %> @brief add packets transmitted from other nodes to our receiving
+        %>Deque
+        %> @param [in] obj - this node object
+        %> @param [in] transmittedPackets - array of packets transmitted by
+        %> other nodes (ALL nodes, so we can compute interference)
+        %> @param [in] nodes - array of nodes transmitting those packets,
+        %> used to compute delay, attenuation and probability of success
         function obj = addTransmittedPackets(obj,transmittedPackets,nodes)
             if ~isempty(transmittedPackets)
                 for i = 1:length(transmittedPackets)
@@ -167,6 +265,10 @@ classdef nodeClass < handle
             end
         end
 
+        %> @brief Add packets to our outbound packet FIFO
+        %> @param [in] obj - the node object
+        %> @param [in] packets - array of packet objects to send
+        %> @retval obj - modified node object
         function obj = pushPacketsToSend(obj,packets)
             for i = 1:length(packets)
                 packet=packets(i);
@@ -175,6 +277,35 @@ classdef nodeClass < handle
             end
         end
 
+        %> @brief schedule an HD channel event
+        %> @details Call this for the node that will be the HD transmitter.
+        %> This will send messages to all nodes - telling them time to
+        %> reconfigure for use of HD channel, duration of time for use of
+        %> HD channel, new center frequency for FD channel, new bandwidth
+        %> fraction for FD channel, center frequency for HD channel,
+        %> bandwidth fraction for HD channel, index into the modulator
+        %> array for the HD modulator, and an array of packets that will be
+        %> sent by the HD transmitting node. Directly sets the event
+        %> structure for the HD transmitting node, pushes messages to
+        %> reconfigure to all other nodes, with ACK required for all nodes
+        %> @param [in] obj - the node object for scheduling
+        %> @param [in] time - time in seconds for the HD event to begin
+        %> @param [in] duration - duration in seconds for use of HD
+        %> @param [in] fullNodeList - list of integer node IDs for whole
+        %> network requiring configuration
+        %> @param [in] newFDcenterFrequency - new center frequency for FD
+        %> operation during HDin Hz
+        %> @param[in] newFDbandwidthFraction - new fractional bandwidth for
+        %> FD operation during HD
+        %> @param [in] HDDestination - destination node number for HD
+        %> @param [in] HDCenterFrequency - center frequency in Hz for HD
+        %> modulator
+        %> @param [in] HDBandwidthFraction - fractional bandwidth for HD
+        %> modulator
+        %> @param [in] HDmodulatorIndex - integer index in array of
+        %> modulators for HD operation
+        %> @param [in] HDMessageList - array of packets to be transmitted
+        %> @retval obj - modified node object
         function obj = scheduleHDChannelEvent(obj,time,duration,fullNodeList,newFDcenterFrequency,...
                 newFDbandwidthFraction,HDDestination,HDCenterFrequency,HDBandwidthFraction,HDmodulatorIndex,HDMessageList)
             obj.FDeventStructure.state = obj.FDHDwaitingAsHDnode;  %waiting to grab the channel
@@ -208,6 +339,11 @@ classdef nodeClass < handle
             end
         end
 
+        %> @brief forward any packets if we are a forwarding node
+        %> @param [in] obj - the node object
+        %> @param [in] receivedPackets - array of all received packets
+        %> @param [in] time - present time in seconds
+        %> @retval obj - modified node object
         function obj = forwardStoredAsNeeded(obj,receivedPackets,time)
             %first see if any of the previously relayed packets was long
             %enough ago that we can forget it
@@ -256,6 +392,11 @@ classdef nodeClass < handle
             end
         end
 
+        %> @brief forward any packets we need to if we are a mesh server
+        %> @param [in] obj - the node object
+        %> @param [in] receivedPackets - array of all received packets
+        %> @param [in] time - present time in seconds
+        %> @retval obj - modified node object
         function obj = forwardMeshAsNeeded(obj,receivedPackets,time)
             %do nothing if we're not an infrastructure node
             if isempty(obj.meshRouteTable)
@@ -318,7 +459,11 @@ classdef nodeClass < handle
         end
 
 
-
+        %> @brief queue ACK messages for any critical received messages
+        %> @param [in] obj - node object
+        %> @param [in] receivedPackets - array of all received packets
+        %> @param [in] time - present time in seconds
+        %> @retval obj - modified node object
         function obj = ACKasNeeded(obj, receivedPackets,time)
             %first see if any of the previously relayed packets was long
             %enough ago that we can forget it
@@ -356,6 +501,17 @@ classdef nodeClass < handle
             end
         end
 
+        %> @brief send any packets as needed
+        %> @details Looks into FIFO of packets needing to be sent. Looks to
+        %> see if allowed to send (i.e. the CSMA state machine, or if we
+        %> are already sending), then proceeds to send earliest packet
+        %> queued - if permitted
+        %> @param [in] obj - the node object
+        %> @param [in] time - present time in seconds
+        %> @param [in] amReceiving - boolean indicating if carrier sensed
+        %> @retval localSendingPacket - a packet object for present packet,
+        %> if sending, empty otherwise
+        %> @retval obj - modified node object
         function [localSendingPacket, obj] = sendAsNeeded(obj, time, amReceiving)
             %now, see if we have something to send
             if obj.packetFIFOtoSend.isEmpty || obj.isSending(time)
@@ -417,6 +573,13 @@ classdef nodeClass < handle
             end
         end
 
+        %> @brief handle timed-out critical messages
+        %> @details Looks to see if we sent any messages requiring ACK, for
+        %> which we have still not received an ACK. If too long, re-send
+        %> the message in an attempt to force an ACK from destination
+        %> @param [in] obj - the node object
+        %> @param [in] time - present time in seconds
+        %> @retval obj - modified node object
         function obj = handleTimedOutACKS(obj,time)
             [packetsNeedingAck, ~, indices] = obj.packetDequeAwaitingAck.packets;
             %now, see if there are any ancient packets awaiting ack
@@ -460,6 +623,20 @@ classdef nodeClass < handle
             end
         end
 
+        %> @brief oprate a node
+        %> @details Checks for any packets being received, looks tor any
+        %> critical messages we sent that still haven't been ACKed, handles
+        %> any received ACKs, forwards any packets queued if we are a
+        %> store-and-forward node, forwards any packets if we are a mesh
+        %> server node, handles any received configuration messages, runs
+        %> the configuration state machine, works on sending packets
+        %> @param [in] obj - the node object
+        %> @param [in] time - present time in seconds
+        %> @retval receivedPackets - array of any completed received
+        %> packets (valid only)
+        %> @retval localSendingPacket - packet we're sending now (empty
+        %> otherwise)
+        %> @retval obj - modified node object
         function [receivedPackets,localSendingPacket,obj] = run(obj,time)
             %first, do the easy thing and go handle receiving
             [receivedPackets, amReceiving] = obj.receivingPackets(time);
@@ -473,6 +650,12 @@ classdef nodeClass < handle
             localSendingPacket = obj.sendAsNeeded(time,amReceiving);
         end
 
+        %> @brief receive packets - check to see if valid
+        %> @param [in] obj - the node object
+        %> @param [in] time - present time in seconds
+        %> @retval goodPackets - array of packets that have been validated
+        %> @retval receiving - boolean if message arriving now
+        %> @retval obj - the node object
         function [goodPackets, receiving, obj] = receivingPackets(obj,time)
             %assume not receiving
             receiving = false;
@@ -527,14 +710,36 @@ classdef nodeClass < handle
             goodPackets = goodPackets(successes);
         end
 
+        %> @brief get active modulator (object NOT a copy)
+        %> @param [in] obj - the node object
+        %> @retval result - the active modulator object
         function result = getModulator(obj)
             result = obj.activeModulator;
         end
 
+        %> @brief set the active modulator
+        %> @param [in] obj - the node object
+        %> @param [in] index - the index of the modulator to make active
+        %> @retval obj - modifie node object
         function obj = setModulator(obj,index)
             obj.activeModulator = copy(obj.modulators{index});
         end
 
+        %> @brief validate packets
+        %> @details Compute base interference (0 if not transmitting, or
+        %> residual un-self-cancelled if transmitting), then external
+        %> interference from other sources based on distance, spectral
+        %> overlap and temporal overlap. Finally, ask the modulator of
+        %> origin about invalidation due to standard probability of failure
+        %> @param [in] obj - the node object
+        %> @param [in] packets - array of packets in receive process
+        %> @param [in,out] validities - boolean array of packets, false
+        %> elements indicate packet previously invalidated
+        %> @param [in] finished - boolean array indicating whether packet
+        %> has finished arriving
+        %> @param [in] time - present time in seconds
+        %> @retval validities - boolian array indicating which packets have
+        %> been invalidated so far (marked with fals)
         function validities = validatePackets(obj,packets, validities, finished, time)
             if isempty(packets)
                 return;

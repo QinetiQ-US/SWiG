@@ -1,3 +1,29 @@
+%> @brief Analyze simulation results to produce statistical values
+%> @param [in] sentPacketInfo N x 6 array of sent-packet info from
+% simulation function
+%> @param [in] receivedPacketInfo M x 3 array of received packet info from
+%> simulation function
+%> @param [in] startHD time in seconds for HD cutover (omit if none)
+%> @param [in] durationOfHD time in seconds for HD operation (omit if none)
+%> @retval results a struct with fields:<br>
+%> FDnumMessagesSent - total number of FD messages sent<br>
+%> FDnumMessagesLost - total number of FD messages that were lost<br>
+%> FDnumAckRequiredMessages - number of FD critical messages<br>
+%> FDnumAckRequiredMessagesLost - number of FD critical messages where ACK never received<br>
+%> FDmeanLatency - [mean latency for all FD, mean latency for critical FD
+%> (including ACK received)] <br>
+%> FDsigmaLatency - standard deviations of latencies<br>
+%> FDmedianLatency - median latencies<br>
+%> FDmaxLatency - max latencies <br>
+%> FDThroughput - total FD throughput in bits/second<br>
+%> HDnumMessagesSent - total number of HD messages sent<br>
+%> HDnumMessagesLost - number of HD messages lost<br>
+%> FDNoHDThroughput - throughput of FD channel in bps when no HD is in
+%> operation<br>
+%> FDDuringHDThroughput - throughput of FD channel in bps when HD is in
+%> %operation<br>
+%> HDThroughput - throughput of HD channel in bps
+
 function results = analyzeSimulationResults(sentPacketInfo,receivedPacketInfo,startHD, durationOfHD)
 % function results = analyzeSimulationResults(sentPacketInfo,receivedPacketInfo)
 %analyze results from a simulation run
