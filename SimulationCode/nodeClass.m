@@ -30,6 +30,8 @@ classdef nodeClass < handle
         modulators;
         %> index of selected modulator
         activeModulator;
+        %> channel model for use in decoding
+        channelModel;
         %> ID number for this node
         ID;
         %> FIFO of packets to send
@@ -76,12 +78,15 @@ classdef nodeClass < handle
 
     methods
         %> @brief nodeClass constructor
-        %> @param [in] location - 3x1 (x,y,z) location of node in meters
+        %> @param [in] location - 3x1 (x,y,z) location of node in meters OR
+        %> 4xn (t,x,y,z) trajectory, with t in seconds
         %> @param [in] modulators - cell array of modulator objects
         %> supported by this node
         %> @param [in] ID - integer ID number for this node
         %> @param [in] sendQueueDepth - number of elements for sending FIFO
-        function obj = nodeClass(location,modulators,ID,sendQueueDepth)
+        %> @param [in] ourChannelModel - the channel model-derived object
+        %> for our propagation and noise model
+        function obj = nodeClass(location,modulators,ID,sendQueueDepth,ourChannelModel)
             obj.location = location;
             obj.storeAndForwardTable = [];
             obj.meshRouteTable = [];
@@ -102,13 +107,28 @@ classdef nodeClass < handle
             obj.ACKrebroadcastTime = 30;  %how long to wait to retry if no ACK
             obj.ACKremovalAge = 0.8 * obj.ACKrebroadcastTime;  %how long to wait after routed repeat to remove ACK request
             obj.FDeventStructure.state = obj.FDHDidle;  %nothing happening here
+            if nargin < 5
+                ourChannelModel = reliableAcousticPathModel;
+            end
+            obj.channelModel = copy(ourChannelModel);
         end
 
         %> @brief get location of node
         %> @param [in] obj - node object
+        %> @param [in] time - time to determine location
         %> @retval result - 3 x1 location of node
-        function result = getLocation(obj)
-            result = obj.location;
+        function result = getLocation(obj, time)
+            if nargin < 2
+                time = 0;
+            end
+            if size(obj.location) < 4
+                result = obj.location;
+            else
+                times = obj.location(:,1);
+                xyzs = obj.location(:,2:4);
+                myxyz = interp1(times,xyzs,time,"linear","extrap");
+                result=myxyz;
+            end
         end
 
         %> @brief set mesh routing table for node
@@ -125,15 +145,6 @@ classdef nodeClass < handle
         %> @retval obj - modified node object
         function obj = setStoreAndForwardTable(obj,storeAndForwardTable)
             obj.storeAndForwardTable = storeAndForwardTable;
-        end
-
-        %> @brief get propagation time between two nodes
-        %> @param [in] obj - this node
-        %> @param [in] node - other node
-        %> @retval result - propagation time between nodes
-        function result = getDelay(obj,node)
-            delta = obj.location - node.getLocation;
-            result = norm(delta)/1500;
         end
 
         %> @brief set bandwidth fraction of active modulator
@@ -252,13 +263,21 @@ classdef nodeClass < handle
         %> other nodes (ALL nodes, so we can compute interference)
         %> @param [in] nodes - array of nodes transmitting those packets,
         %> used to compute delay, attenuation and probability of success
-        function obj = addTransmittedPackets(obj,transmittedPackets,nodes)
+        %> @param [in] time - time of added packet
+        function obj = addTransmittedPackets(obj,transmittedPackets,nodes,time)
             if ~isempty(transmittedPackets)
+                rxLocation = obj.getLocation(time);
                 for i = 1:length(transmittedPackets)
-                    thePacket = transmittedPackets(i);
-                    delay = obj.getDelay(nodes(i));
-                    if (delay>1e-3)  %don't queue your own messages here
+                    thePacket = copy(transmittedPackets(i));
+                    txLocation = nodes(i).getLocation(time);
+                    if thePacket.getSource() ~= obj.ID  %don't queue your own messages here
+                        %go run the channel model to get transmission loss,
+                        %delay
+                        f = thePacket.getModulator.getCenterFrequency();
+                        [tl, delay] = obj.channelModel.transmissionLoss(txLocation,rxLocation,f);
                         thePacket.setPacketDelay(delay);
+                        signalLevel = thePacket.getModulator.getSignalPower() - tl;
+                        thePacket.setSignalLevel(signalLevel);
                         obj.packetDequeReceiving.add(thePacket);
                     end
                 end
@@ -701,13 +720,6 @@ classdef nodeClass < handle
                 obj.packetDequeReceiving.invalidate(whichIndices(i));
             end
             goodPackets = packets(finished & validities);
-            %finally, see if the physical layer failed us
-            successes = false(length(goodPackets),1);
-            for i=1:length(goodPackets)
-                successes(i) = goodPackets(i).getModulator.packetValid(goodPackets(i).getPacketDelay);
-            end
-            %finally, only return the successful packets
-            goodPackets = goodPackets(successes);
         end
 
         %> @brief get active modulator (object NOT a copy)
@@ -748,7 +760,7 @@ classdef nodeClass < handle
             %looking for in-process
             %first - see if we have too much interference
             if obj.activeModulator.getDuplex && obj.isSending(time)  %full duplex and sending
-                baseInterference = 10^(-0.1*obj.activeModulator.selfCancellationIn_dB);  %power
+                baseInterference = 10^(0.1*(obj.activeModulator.getSignalPower - obj.activeModulator.selfCancellationIn_dB));  %power
             else
                 baseInterference = 0;
             end
@@ -756,8 +768,7 @@ classdef nodeClass < handle
             unfinishedPackets = find(~finished);
             for i = 1:length(unfinishedPackets)
                 thisPacket=packets(unfinishedPackets(i));
-                signal = 10^(-0.1*thisPacket.getModulator.attenuation(...
-                    thisPacket.getPacketDelay));
+                signalin_dB = thisPacket.getSignalLevel;
                 interference = baseInterference;
                 startTime = thisPacket.getPacketStart + ...
                     thisPacket.getPacketDelay;
@@ -772,15 +783,26 @@ classdef nodeClass < handle
                             overlapFraction = 0;
                         end
                         interferenceFraction = thisPacket.getModulator.getBandOverlapFraction(thatPacket.getModulator);
-                        interference = interference + 10^(-0.1*thatPacket.getModulator.attenuation(...
-                            thatPacket.getPacketDelay))*interferenceFraction*overlapFraction;
+                        interference = interference + (10^(0.1*thatPacket.getSignalLevel))*interferenceFraction*overlapFraction;
                     end
                 end
-                if interference > 0 %don't invalidate for interference if there is none
-                    interferenceFraction = 10*log10(interference/signal);
-                    if interferenceFraction >= packets(unfinishedPackets(i)).getModulator.getMaxInterferenceIn_dB
+                %now, reduce interference by the interference rejection for
+                %this modulator
+                interference = interference * 10^(-0.1*packets(unfinishedPackets(i)).getModulator.getInterferenceMitigation);
+                %convert interference to PSD
+                BW = packets(unfinishedPackets(i)).getModulator.getBandwidth;
+                interferencePSD = interference/BW;
+                %go get noise level
+                f = packets(unfinishedPackets(i)).getModulator.getCenterFrequency;
+                noiseLevel = 10^(0.1*obj.channelModel.noiseLevel(f));
+                noisePlusInterference = noiseLevel + interferencePSD;
+                N0 =10*log10(noisePlusInterference);
+                bitrate = packets(unfinishedPackets(i)).getModulator.getBandwidthFraction*...
+                    packets(unfinishedPackets(i)).getModulator.topBitrate;
+                bitTime = 1/bitrate;
+                EbOverN0 = 10*log10(bitTime)+signalin_dB-N0;
+                if EbOverN0 < packets(unfinishedPackets(i)).getModulator.EbOverN0Required
                         validities(unfinishedPackets(i)) = false;
-                    end
                 end
             end
 

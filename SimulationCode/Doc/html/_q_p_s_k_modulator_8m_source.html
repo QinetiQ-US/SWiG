@@ -78,10 +78,10 @@ $(function() {
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>            preambleCollisionFatal = <span class="keyword">false</span>;</div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>            centerFrequency = 25e3;</div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>            maxBandwidth = 10e3;</div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>            maxInterference = -8;   %in dB</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>            interferenceMitigation = -8;   %in dB - interference in QPSK is very bad</div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>            nominalPreambleDuration = (127 + 32)*1.2/maxBandwidth;</div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="class_q_p_s_k_modulator.html#aba085b75d39784301c4eedd6cabfb9df">   16</a></span>            obj = obj@<a class="code hl_class" href="classmodulator_class.html">modulatorClass</a>(topBitrate,packetLength,preambleCollisionFatal,fullDuplex,...</div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>                CSMA, centerFrequency,maxInterference,nominalPreambleDuration,maxBandwidth);</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>                CSMA, centerFrequency,interferenceMitigation,nominalPreambleDuration,maxBandwidth);</div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>        end</div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>        function result = getPacketDuration(obj)</div>
@@ -97,46 +97,20 @@ $(function() {
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    end</div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno"><a class="line" href="class_q_p_s_k_modulator.html#a5829cc3e8949f4f9357fc225607d692e">   31</a></span> </div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    methods(Static)</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>        function result = packetValid(delay)</div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>            distance = delay * 1500;</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>            pOops = 0.05;  %5% chance of drop no matter what</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>            %fixed chance of oops</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="class_q_p_s_k_modulator.html#a26af808cfd8dd6694cbfee91e6e5fa2f">   37</a></span>            check = rand(1);</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>            <span class="keywordflow">if</span> check &lt; pOops</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>                result = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>                <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>            end</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>            %probability grows fast with distance</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>            fatalDistance = 4000;</div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>            pOkay = <a class="code hl_function" href="sigmoid_8m.html#a645634769b0fe30d579f0759df5c283f">sigmoid</a>(distance,fatalDistance,-11);</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="class_q_p_s_k_modulator.html#a1b610bdb478b5edde897b15ff38ff0e3">   45</a></span>            check = rand(1);</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>            result = check &lt; pOkay;</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>        end</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span> </div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>        function result = attenuation(delay)</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>            %r^2 attenuation</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>            distance = delay*1500;  %meters</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>            atten1 = 10*log10(distance^2);</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>            %frequency-dependent absorption</div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>            atten2 = 4.9*0.001*distance;  %4.9 dB/km @ 24 kHz midband</div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>            result = atten1 + atten2;</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>        end</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span> </div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>        function result = isHDModulator</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>            result = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>        end</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    end</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno"><a class="line" href="class_q_p_s_k_modulator.html#a357231c18f3e9477ce918b8ba4b4f743">   62</a></span> </div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span> </div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span> </div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>end</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>        function result = isHDModulator</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>            result = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>        end</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    end</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="class_q_p_s_k_modulator.html#a26af808cfd8dd6694cbfee91e6e5fa2f">   37</a></span> </div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span> </div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>end</div>
 <div class="ttc" id="aclass_q_p_s_k_modulator_html"><div class="ttname"><a href="class_q_p_s_k_modulator.html">QPSKModulator</a></div><div class="ttdoc">QPSK high-speed HD modulator/demodulator.</div><div class="ttdef"><b>Definition:</b> <a href="_q_p_s_k_modulator_8m_source.html#l00002">QPSKModulator.m:3</a></div></div>
 <div class="ttc" id="aclassmodulator_class_html"><div class="ttname"><a href="classmodulator_class.html">modulatorClass</a></div><div class="ttdoc">Modulator class - Abstract class.</div><div class="ttdef"><b>Definition:</b> <a href="modulator_class_8m_source.html#l00003">modulatorClass.m:4</a></div></div>
-<div class="ttc" id="asigmoid_8m_html_a645634769b0fe30d579f0759df5c283f"><div class="ttname"><a href="sigmoid_8m.html#a645634769b0fe30d579f0759df5c283f">sigmoid</a></div><div class="ttdeci">function sigmoid(in x, in c, in a)</div><div class="ttdoc">sigmoid function used for almost-threshold failure behavior</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Feb 8 2022 09:09:34 for SWiG Protocol Simulation Tools by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3
+Generated on Wed Apr 6 2022 16:32:25 for SWiG Protocol Simulation Tools by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3
 </small></address>
 </body>
 </html>

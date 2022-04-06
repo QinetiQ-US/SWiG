@@ -19,14 +19,17 @@ classdef modulatorClass < matlab.mixin.Copyable
         centerFrequency;    
         %> nominal center frequency
         nominalCenterFrequency; 
-        %> maximum permissible interference in dB
-        maxInterferenceIn_dB;   
+        %> interference mitigation - conversion factor for interference ->
+        %> effective N0
+        interferenceMitigationIn_dB;   
         %> self-cancellation in dB
         selfCancellationIn_dB;  
         %> preamble duration when bandwidth full - scales inverse to bandwidth
         nominalPreambleDuration;  
         %> full bandwidth in Hz
-        maxBandwidth;       
+        maxBandwidth;
+        %> power into the water
+        signalPowerIn_dB;
     end
 
     methods
@@ -54,16 +57,32 @@ classdef modulatorClass < matlab.mixin.Copyable
             obj.CSMA = CSMA;
             obj.centerFrequency = centerFrequency;
             obj.nominalCenterFrequency = centerFrequency;
-            obj.maxInterferenceIn_dB = maxInterferenceIn_dB;
+            obj.interferenceMitigationIn_dB = maxInterferenceIn_dB;
             obj.selfCancellationIn_dB = 50;  %based on experimental values near bottom or top
             obj.nominalPreambleDuration = nominalPreambleDuration;
             obj.maxBandwidth = maxBandwidth;
+            obj.signalPowerIn_dB = 180;  %default signal level
         end
 
         %> @brief reset modulator to default carrier and bandwidth
         function obj = resetModulator(obj)
             obj.centerFrequency = obj.nominalCenterFrequency;
             obj.bandwidthFraction = 1.0;
+        end
+
+        %> @brief set the signal power to other than default
+        %> @param [in] obj - the object
+        %> @param [out] power - power level in dB
+        %> @retval out
+        function obj = setSignalPower(obj,power)
+            obj.signalPowerIn_dB = power;
+        end
+
+        %> @brief get the signal power
+        %> @param [in] obj - the object
+        %> @retval result power output in dB
+        function result = getSignalPower(obj)
+            result = obj.signalPowerIn_dB;
         end
 
         %> @brief access duplex boolean
@@ -97,9 +116,9 @@ classdef modulatorClass < matlab.mixin.Copyable
             result = obj.preambleCollisionFatal;
         end
 
-        %> @brief access max survivable interference 
-        function result = getMaxInterferenceIn_dB(obj)
-            result = obj.maxInterferenceIn_dB;
+        %> @brief access interference mitigation
+        function result = getInterferenceMitigation(obj)
+            result = obj.interferenceMitigationIn_dB;
         end
 
         %> @brief access preamble duration
@@ -165,17 +184,11 @@ classdef modulatorClass < matlab.mixin.Copyable
         function result = isHDModulator()
             result = false;
         end
-    end
-
-    methods(Abstract,Static)
-        %> @brief boolean for packet valid
-        %> @param [in] delay propagation delay in seconds
-        %> @retval boolean
-        packetValid(delay)
-        %> @brief attenuation in dB
-        %> @param [in] delay propagation delay in seconds
-        %> @retval attenuation
-        attenuation(delay)
+        %> @brief SNR required for successful decoding
+        %> @retval result - value in dB Eb/N0
+        function result = EbOverN0Required()
+            result = 8;
+        end
     end
 
     methods(Abstract)

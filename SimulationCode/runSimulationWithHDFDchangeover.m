@@ -113,7 +113,7 @@ for time = 0:timeIncrement:timeToRun
     end
     %handle the newly sending packets
     for i=1:length(nodes)
-        nodes{i}.addTransmittedPackets(sendingPackets,sendingLocations);
+        nodes{i}.addTransmittedPackets(sendingPackets,sendingLocations,time);
     end
     %now, see about some random transmissions
     if time < lastSendTime

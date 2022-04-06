@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['forwardmeshasneeded_0',['forwardMeshAsNeeded',['../classnode_class.html#a8a73430f938ef742098965710bfb28b1',1,'nodeClass']]],
-  ['forwardstoredasneeded_1',['forwardStoredAsNeeded',['../classnode_class.html#a61b6c37bf9fe978377f268917079673e',1,'nodeClass']]]
+  ['ebovern0required_0',['EbOverN0Required',['../classmodulator_class.html#a8f40600dd01b1a01cc189c210f757d95',1,'modulatorClass']]]
 ];

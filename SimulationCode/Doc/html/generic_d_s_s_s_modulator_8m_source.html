@@ -80,56 +80,28 @@ $(function() {
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>            preambleCollisionFatal = <span class="keyword">false</span>;</div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>            centerFrequency = 15e3;</div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>            maxBandwidth = 10e3;</div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>            parallelCancellation = 30;  %typical dB cancellation</div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>            maxInterference = parallelCancellation + 10*log10(maxBandwidth/topBitrate)-6;  %Eb/I_0 must be at least 6 dB</div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>            nominalPreambleDuration = 255 * 1.2 / 1e4;</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>            obj = obj@<a class="code hl_class" href="classmodulator_class.html">modulatorClass</a>(topBitrate,packetLength,preambleCollisionFatal,fullDuplex,...</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>                CSMA, centerFrequency,maxInterference,nominalPreambleDuration,maxBandwidth);</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="classgeneric_d_s_s_s_modulator.html#aaab5b6085e37b65632226894f858443b">   21</a></span>        end</div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>        function modulatorType = getModulatorType(obj)</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>            modulatorType.style = <span class="stringliteral">&#39;DSSS&#39;</span>;</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>            modulatorType.bandwidth = obj.bandwidthFraction;</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>        end</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    end</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>            interferenceMitigation = 30;  %typical interference mitigation level in dB</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>            nominalPreambleDuration = 255 * 1.2 / 1e4;</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>            obj = obj@<a class="code hl_class" href="classmodulator_class.html">modulatorClass</a>(topBitrate,packetLength,preambleCollisionFatal,fullDuplex,...</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>                CSMA, centerFrequency,interferenceMitigation,nominalPreambleDuration,maxBandwidth);</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>        end</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="classgeneric_d_s_s_s_modulator.html#aaab5b6085e37b65632226894f858443b">   21</a></span> </div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>        function modulatorType = getModulatorType(obj)</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>            modulatorType.style = <span class="stringliteral">&#39;DSSS&#39;</span>;</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>            modulatorType.bandwidth = obj.bandwidthFraction;</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>        end</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    end</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span> </div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    methods(Static)</div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>        function result = packetValid(delay)</div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>            distance = delay * 1500;</div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>            pOops = 0.05;  %5% chance of drop no matter what</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>            %fixed chance of oops</div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>            check = rand(1);</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>            <span class="keywordflow">if</span> check &lt; pOops</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>                result = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>                <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>            end</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>            %probability grows fast with distance</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="classgeneric_d_s_s_s_modulator.html#a5682f7b015228cbf1965be47de11308d">   40</a></span>            fatalDistance = 5000;</div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>            pOkay = <a class="code hl_function" href="sigmoid_8m.html#a645634769b0fe30d579f0759df5c283f">sigmoid</a>(distance,fatalDistance,-11);</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>            check = rand(1);</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>            result = check &lt; pOkay;</div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>        end</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>        function result = attenuation(delay)</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>            %r^2 attenuation</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>            distance = delay*1500;  %meters</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>            atten1 = 10*log10(distance^2);</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>            %frequency-dependent absorption</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>            atten2 = 2.0*0.001*distance;  %2.0 dB/km @ 15 kHz midband</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>            result = atten1 + atten2;</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>        end</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    end</div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno"><a class="line" href="classgeneric_d_s_s_s_modulator.html#af4fed91949834a22eadaa52f55b106bc">   54</a></span> </div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span> </div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>end</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>end</div>
 <div class="ttc" id="aclass_s_w_i_g_modulator_html"><div class="ttname"><a href="class_s_w_i_g_modulator.html">SWIGModulator</a></div><div class="ttdoc">Class for SWIG modulator.</div><div class="ttdef"><b>Definition:</b> <a href="_s_w_i_g_modulator_8m_source.html#l00004">SWIGModulator.m:5</a></div></div>
 <div class="ttc" id="aclassgeneric_d_s_s_s_modulator_html"><div class="ttname"><a href="classgeneric_d_s_s_s_modulator.html">genericDSSSModulator</a></div><div class="ttdoc">Class for generic DSSSmodulator.</div><div class="ttdef"><b>Definition:</b> <a href="generic_d_s_s_s_modulator_8m_source.html#l00006">genericDSSSModulator.m:7</a></div></div>
 <div class="ttc" id="aclassmodulator_class_html"><div class="ttname"><a href="classmodulator_class.html">modulatorClass</a></div><div class="ttdoc">Modulator class - Abstract class.</div><div class="ttdef"><b>Definition:</b> <a href="modulator_class_8m_source.html#l00003">modulatorClass.m:4</a></div></div>
-<div class="ttc" id="asigmoid_8m_html_a645634769b0fe30d579f0759df5c283f"><div class="ttname"><a href="sigmoid_8m.html#a645634769b0fe30d579f0759df5c283f">sigmoid</a></div><div class="ttdeci">function sigmoid(in x, in c, in a)</div><div class="ttdoc">sigmoid function used for almost-threshold failure behavior</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Feb 8 2022 09:09:33 for SWiG Protocol Simulation Tools by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3
+Generated on Wed Apr 6 2022 16:32:25 for SWiG Protocol Simulation Tools by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3
 </small></address>
 </body>
 </html>

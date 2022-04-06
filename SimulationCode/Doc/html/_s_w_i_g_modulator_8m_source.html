@@ -79,10 +79,10 @@ $(function() {
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>            preambleCollisionFatal = <span class="keyword">true</span>;</div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>            centerFrequency = 21.33e3;</div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>            maxBandwidth = 6.76e3;</div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>            maxInterference = 60;   %in dB</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>            interferenceMitigation = 60;   %in dB</div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>            nominalPreambleDuration = 32 * 0.003846 ;</div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>            obj = obj@<a class="code hl_class" href="classmid_band_modulator_class.html">midBandModulatorClass</a>(topBitrate,packetLength,preambleCollisionFatal,fullDuplex,...</div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>                CSMA, centerFrequency,maxInterference,nominalPreambleDuration,maxBandwidth);</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>                CSMA, centerFrequency,interferenceMitigation,nominalPreambleDuration,maxBandwidth);</div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno"><a class="line" href="class_s_w_i_g_modulator.html#a44ce70ca632180a1a724e8a25f0cb1d4">   19</a></span>        end</div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>        </div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>        function modulatorType = getModulatorType(obj)</div>
@@ -97,7 +97,7 @@ $(function() {
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Feb 8 2022 09:09:35 for SWiG Protocol Simulation Tools by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3
+Generated on Wed Apr 6 2022 16:32:26 for SWiG Protocol Simulation Tools by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3
 </small></address>
 </body>
 </html>

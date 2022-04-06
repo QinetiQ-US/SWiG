@@ -19,10 +19,10 @@ classdef SWIGModulator < midBandModulatorClass
             preambleCollisionFatal = true;
             centerFrequency = 21.33e3;
             maxBandwidth = 6.76e3;
-            maxInterference = 60;   %in dB
+            interferenceMitigation = 60;   %in dB
             nominalPreambleDuration = 32 * 0.003846 ;
             obj = obj@midBandModulatorClass(topBitrate,packetLength,preambleCollisionFatal,fullDuplex,...
-                CSMA, centerFrequency,maxInterference,nominalPreambleDuration,maxBandwidth);
+                CSMA, centerFrequency,interferenceMitigation,nominalPreambleDuration,maxBandwidth);
         end
         
         %> @brief Function to describe the modulator

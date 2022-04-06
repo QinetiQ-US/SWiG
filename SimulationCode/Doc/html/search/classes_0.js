@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['genericdsssmodulator_0',['genericDSSSModulator',['../classgeneric_d_s_s_s_modulator.html',1,'']]]
+  ['channelmodelclass_0',['channelModelClass',['../classchannel_model_class.html',1,'']]]
 ];

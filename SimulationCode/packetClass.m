@@ -19,8 +19,12 @@ classdef packetClass < matlab.mixin.Copyable
         responseRequired;
         %> time in seconds of start of transmission
         timeStarted;
-        %> propagation time in seconds (used by the receiving node)
+        %> time day for transmission - a variable of convenience
         timeDelay;
+        %> power at receiver - a variable of convenience
+        signalLevelAtReceiver;
+        %> location of transmitter at time of transmission (seconds)
+        transmitterLocation;
         %> UID of this packet
         IDsend;
         %> UID of packet this is ACKing
@@ -45,7 +49,8 @@ classdef packetClass < matlab.mixin.Copyable
             obj.destination = dest;
             obj.responseRequired = respReq;
             obj.timeStarted = -1;
-            obj.timeDelay = -1;
+            obj.transmitterLocation = [nan,nan,nan];  %use this to say we don't have it
+            obj.timeDelay = -1;  %use this to say we don't have it yet
             obj.IDsend = IDsend;
             obj.IDack = IDack;
             obj.data = data;
@@ -69,6 +74,7 @@ classdef packetClass < matlab.mixin.Copyable
         %> @brief start packet transmission
         %> @param [in] obj - the packet object
         %> @param [in] time - time in seconds for start of packet
+        %> [x,y,z] in meters
         %> @retval - modified packet object
         function obj = startPacket(obj,time)
             obj.timeStarted = time;
@@ -94,6 +100,21 @@ classdef packetClass < matlab.mixin.Copyable
         %> @retval result - propagation time in seconds
         function result = getPacketDelay(obj)
             result = obj.timeDelay;
+        end
+
+        %> @brief set packet signal level at receiver
+        %> @param [in] obj - the packet object
+        %> @param [in] level - power level in dB
+        %> @retval obj - the object
+        function obj = setSignalLevel(obj,level)
+            obj.signalLevelAtReceiver = level;
+        end
+
+        %> @brief get packet signal level at receiver
+        %> @param [in] obj - the packet object
+        %> @retval result - signal level at the receiver in dB
+        function result = getSignalLevel(obj)
+            result = obj.signalLevelAtReceiver;
         end
 
         %> @brief get packet duration

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['documentationheader_2em_0',['documentationHeader.m',['../documentation_header_8m.html',1,'']]]
+  ['channelmodelclass_2em_0',['channelModelClass.m',['../channel_model_class_8m.html',1,'']]]
 ];

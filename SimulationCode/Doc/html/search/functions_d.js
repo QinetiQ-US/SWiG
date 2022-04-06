@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['validatepackets_0',['validatePackets',['../classnode_class.html#a6bedbd256df0529628e3a739f50d2e4f',1,'nodeClass']]]
+  ['transmissionloss_0',['transmissionLoss',['../classchannel_model_class.html#a43aee466c3cfc68f67e38e0adcbf2e45',1,'channelModelClass::transmissionLoss()'],['../classreliable_acoustic_path_model.html#aac93708b653c097e634fcb75051884d1',1,'reliableAcousticPathModel::transmissionLoss()']]]
 ];

@@ -6,5 +6,7 @@ var searchData=
   ['packetdequerelayed_3',['packetDequeRelayed',['../classnode_class.html#af19349a03dfa725af260614fd31cbefa',1,'nodeClass']]],
   ['packetfifotosend_4',['packetFIFOtoSend',['../classnode_class.html#af90e4608df86f7bee7ff15661c762d58',1,'nodeClass']]],
   ['packetlength_5',['packetLength',['../classmodulator_class.html#aa5429733dd1800742c961166392c654b',1,'modulatorClass']]],
-  ['preamblecollisionfatal_6',['preambleCollisionFatal',['../classmodulator_class.html#af4c72605f508e4c36a79dd2083ceae34',1,'modulatorClass']]]
+  ['pfail_6',['pFail',['../classreliable_acoustic_path_model.html#a5c700afb62b3690c4629aeec3a3e6b8f',1,'reliableAcousticPathModel']]],
+  ['ph_7',['pH',['../classchannel_model_class.html#a83e89125085fe751f6f74ded303c8db7',1,'channelModelClass']]],
+  ['preamblecollisionfatal_8',['preambleCollisionFatal',['../classmodulator_class.html#af4c72605f508e4c36a79dd2083ceae34',1,'modulatorClass']]]
 ];

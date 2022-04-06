@@ -37,8 +37,8 @@ parfor combinedIndex = 1:(nReps*nMods)
     repIndex = 1+ rem(combinedIndex-1,nReps);
     modulatorIndex = 1 + floor((combinedIndex-1)/nReps);
     rng(0);  %force repeatability, since we don't know which order things run
-    thisModulator = modulatorIndexList(modulatorIndex);
-    numRepeaters = repeaterNumberToTest(repIndex);
+    thisModulator = modulatorIndexList(modulatorIndex); %#ok<PFBNS> 
+    numRepeaters = repeaterNumberToTest(repIndex); %#ok<PFBNS> 
     minRouteDistance = 0;
     idealPoints=[]; %#ok<NASGU>
     switch numRepeaters
@@ -71,7 +71,18 @@ parfor combinedIndex = 1:(nReps*nMods)
     maxQueueDepth = 1024;
     nodes = cell(numNodes,1);
     for i = 1:numNodes
-        nodes{i}=nodeClass(locations(i,:),ModulatorList,i,maxQueueDepth); %#ok<*SAGROW>
+        %special for node number 10 - it's going to move from one point to
+        %another over 3000 seconds in a straight line
+        if i==10
+            myLocations=nodeRange*rand(2,3);
+            %make vertical range much smaller
+            myLocations(:,3) = myLocations(:,3)*vertRangeRatio;
+            trajectory=[[0 myLocations(1,:)];...
+                [3000 myLocations(2,:)]];
+            nodes{i}=nodeClass(trajectory,ModulatorList,i,maxQueueDepth); %#ok<*SAGROW>
+        else
+            nodes{i}=nodeClass(locations(i,:),ModulatorList,i,maxQueueDepth); %#ok<PFBNS,*SAGROW>
+        end
         nodes{i}.setModulator(thisModulator);
     end
     %set up the store and forward tables
