@@ -122,6 +122,6 @@ for combinedIndex = 1:(nReps*nMods)
     repIndex = 1+ rem(combinedIndex-1,nReps);
     modulatorIndex = 1 + floor((combinedIndex-1)/nReps);
     stats = overallStats{combinedIndex};
-    stats.fractionLost = [stats.FDnumMessagesLost/stats.FDnumMessagesSent stats.FDnumAckRequiredMessagesLost/stats.FDnumAckRequiredMessages];
+    stats.fractionLost = [stats.SMACnumMessagesLost/stats.SMACnumMessagesSent stats.SMACnumAckRequiredMessagesLost/stats.SMACnumAckRequiredMessages];
     completeStats{modulatorIndex,repIndex} = stats;
 end

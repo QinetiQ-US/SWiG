@@ -1,4 +1,4 @@
-%> @brief Example script to run multiple FD/HD network
+%> @brief Example script to run multiple SMAC/HD network
 %> simulations simultaneously
 ModulatorList = {
     SWIGPrimitiveModulator(false,true)
@@ -43,11 +43,11 @@ parfor modulatorIndex = 1:4
     durationForHD = durationForHD + 5.0;  %buffer time
     modulatorForHD = 5;  %QPSK
     rng(0);
-    [sentPacketInfo,receivedPacketInfo] = runSimulationWithHDFDchangeover(nodes,timeToRun,...
+    [sentPacketInfo,receivedPacketInfo] = runSimulationWithHDSMACchangeover(nodes,timeToRun,...
         timeToFinish,timeIncrement,poissonSendInterval,pAckNeeded,sendHDnodeNumber,receiveHDnodeNumber,...
         timeToDoHD, durationForHD, messagesForHD,modulatorForHD);
     thisStats = analyzeSimulationResults(sentPacketInfo,receivedPacketInfo,timeToDoHD, durationForHD);
-    thisStats.fractionLost = [thisStats.FDnumMessagesLost/thisStats.FDnumMessagesSent thisStats.FDnumAckRequiredMessagesLost/thisStats.FDnumAckRequiredMessages];
+    thisStats.fractionLost = [thisStats.SMACnumMessagesLost/thisStats.SMACnumMessagesSent thisStats.SMACnumAckRequiredMessagesLost/thisStats.SMACnumAckRequiredMessages];
     thisStats.HDFractionLost = thisStats.HDnumMessagesLost/thisStats.HDnumMessagesSent;
     disp(thisStats);
     results{modulatorIndex} = thisStats;

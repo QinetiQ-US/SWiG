@@ -1,4 +1,4 @@
-%> @brief runs simulation with FD only
+%> @brief runs simulation with SMAC only
 %>
 %> @param [in] nodes is a cell array containing the nodes in the network
 %> @param [in] timeToRun is duration in seconds for complete run

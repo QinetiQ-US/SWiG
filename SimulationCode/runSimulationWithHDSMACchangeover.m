@@ -1,10 +1,10 @@
-%> @brief runs simulation with changeover from FD only to FD/HD
+%> @brief runs simulation with changeover from SMAC only to SMAC/HD
 %> @details Uses node and modulator setup to order a pre-programmed switchover.
-%> System begins simulation with FD only, then issues a configuration set
+%> System begins simulation with SMAC only, then issues a configuration set
 %> of messages 120 seconds prior to desired switchover to ensure proper
 %> acknowledgment of switchover. Then switchover occurs, high speed
 %> messages are exchanged while low speed continues at reduced bit rate.
-%> Finally, reconfigures back to FD only
+%> Finally, reconfigures back to SMAC only
 %>
 %> @param [in] nodes is a cell array containing the nodes in the network
 %> @param [in] timeToRun is duration in seconds for complete run
@@ -24,7 +24,7 @@
 %> @retval receivedPacketInfo an M x 3 array consisting of
 %> message ID, message ID for packet this is an ACK for (0 if none), time
 %> received
-function [sentPacketInfo,receivedPacketInfo] = runSimulationWithHDFDchangeover(nodes,timeToRun,...
+function [sentPacketInfo,receivedPacketInfo] = runSimulationWithHDSMACchangeover(nodes,timeToRun,...
     timeToFinish,timeIncrement,poissonSendInterval,pAckNeeded,sendHDnodeNumber,receiveHDnodeNumber,...
     timeToDoHD, durationForHD, messagesForHD,modulatorForHD)
 % function [sentPacketInfo,receivedPacketInfo] = runSimulation(nodes,timeToRun,...
@@ -41,7 +41,7 @@ function [sentPacketInfo,receivedPacketInfo] = runSimulationWithHDFDchangeover(n
 %                           Poisson, but on queued messages
 
 
-%figure out if FD modulator is SWiG or DSSS
+%figure out if SMAC modulator is SWiG or DSSS
 baseModulator = nodes{1}.getModulator;
 type = baseModulator.getModulatorType;
 style = type.style;
@@ -74,7 +74,7 @@ for i=1:length(HDMessageList)
     sentPacketInfo = [sentPacketInfo;[HDID 0 timeToDoHD modulatorForHD length(msgData) 1.0]];
     HDID = HDID + 1;
 end
-holdoffInterval = [timeToDoHD-10 timeToDoHD+durationForHD+10];  %don't do any messaging in FD on HD tx/rx channels during this time
+holdoffInterval = [timeToDoHD-10 timeToDoHD+durationForHD+10];  %don't do any messaging in SMAC on HD tx/rx channels during this time
 
 HDchannelTriggered = false;
 

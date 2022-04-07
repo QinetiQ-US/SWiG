@@ -27,7 +27,7 @@
 %> runTestMesh.m - sample script showing how to configure and run multiple
 %>mesh network configurations. Due to oddities of Matlab, this cannot
 %>readily be parallelized<br>
-%>runFDHDtest.m - sample script showing how to configure and run multiple
+%>runSMACHDtest.m - sample script showing how to configure and run multiple
 %> simulations of HD scheduling and use. This is parallelized, and can be
 %> run on a computer with 4 or more cores without changing the "parfor"
 %> construct.

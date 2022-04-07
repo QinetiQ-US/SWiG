@@ -6,21 +6,21 @@
 %> @param [in] startHD time in seconds for HD cutover (omit if none)
 %> @param [in] durationOfHD time in seconds for HD operation (omit if none)
 %> @retval results a struct with fields:<br>
-%> FDnumMessagesSent - total number of FD messages sent<br>
-%> FDnumMessagesLost - total number of FD messages that were lost<br>
-%> FDnumAckRequiredMessages - number of FD critical messages<br>
-%> FDnumAckRequiredMessagesLost - number of FD critical messages where ACK never received<br>
-%> FDmeanLatency - [mean latency for all FD, mean latency for critical FD
+%> SMACnumMessagesSent - total number of SMAC messages sent<br>
+%> SMACnumMessagesLost - total number of SMAC messages that were lost<br>
+%> SMACnumAckRequiredMessages - number of SMAC critical messages<br>
+%> SMACnumAckRequiredMessagesLost - number of SMAC critical messages where ACK never received<br>
+%> SMACmeanLatency - [mean latency for all SMAC, mean latency for critical SMAC
 %> (including ACK received)] <br>
-%> FDsigmaLatency - standard deviations of latencies<br>
-%> FDmedianLatency - median latencies<br>
-%> FDmaxLatency - max latencies <br>
-%> FDThroughput - total FD throughput in bits/second<br>
+%> SMACsigmaLatency - standard deviations of latencies<br>
+%> SMACmedianLatency - median latencies<br>
+%> SMACmaxLatency - max latencies <br>
+%> SMACThroughput - total SMAC throughput in bits/second<br>
 %> HDnumMessagesSent - total number of HD messages sent<br>
 %> HDnumMessagesLost - number of HD messages lost<br>
-%> FDNoHDThroughput - throughput of FD channel in bps when no HD is in
+%> SMACNoHDThroughput - throughput of SMAC channel in bps when no HD is in
 %> operation<br>
-%> FDDuringHDThroughput - throughput of FD channel in bps when HD is in
+%> SMACDuringHDThroughput - throughput of SMAC channel in bps when HD is in
 %> %operation<br>
 %> HDThroughput - throughput of HD channel in bps
 
@@ -37,48 +37,48 @@ else
     HD = false;
 end
 
-%handle FD channel first
-FDsentPacketInfo = sentPacketInfo(sentPacketInfo(:,1)<1e5,:);
+%handle SMAC channel first
+SMACsentPacketInfo = sentPacketInfo(sentPacketInfo(:,1)<1e5,:);
 %first, find number of messages sent
-results.FDnumMessagesSent = size(FDsentPacketInfo,1);
+results.SMACnumMessagesSent = size(SMACsentPacketInfo,1);
 %find number of lost messages and accumulate latency array
-latencies = nan(size(FDsentPacketInfo,1),1);
-results.FDnumMessagesLost = 0;
-results.FDnumAckRequiredMessages = sum(FDsentPacketInfo(:,2));
-results.FDnumAckRequiredMessagesLost = 0;
-FDtotalBits = 0;
-FDduringHDBits = 0;
-FDOutsideHDBits = 0;
-ackRequired = false(length(FDsentPacketInfo),1);
-for i=1:length(FDsentPacketInfo)
-    which = find(FDsentPacketInfo(i,1)==receivedPacketInfo(:,1),1,'first');
-    ackRequired(i) = FDsentPacketInfo(i,2) ~= 0;
+latencies = nan(size(SMACsentPacketInfo,1),1);
+results.SMACnumMessagesLost = 0;
+results.SMACnumAckRequiredMessages = sum(SMACsentPacketInfo(:,2));
+results.SMACnumAckRequiredMessagesLost = 0;
+SMACtotalBits = 0;
+SMACduringHDBits = 0;
+SMACOutsideHDBits = 0;
+ackRequired = false(length(SMACsentPacketInfo),1);
+for i=1:length(SMACsentPacketInfo)
+    which = find(SMACsentPacketInfo(i,1)==receivedPacketInfo(:,1),1,'first');
+    ackRequired(i) = SMACsentPacketInfo(i,2) ~= 0;
     if ~isempty(which)
-        latencies(i) = receivedPacketInfo(which,3) - FDsentPacketInfo(i,3);
-        FDtotalBits = FDtotalBits + FDsentPacketInfo(i,5);
+        latencies(i) = receivedPacketInfo(which,3) - SMACsentPacketInfo(i,3);
+        SMACtotalBits = SMACtotalBits + SMACsentPacketInfo(i,5);
         if HD
-            if FDsentPacketInfo(i,6)>0.95
-                FDOutsideHDBits = FDOutsideHDBits + FDsentPacketInfo(i,5);
+            if SMACsentPacketInfo(i,6)>0.95
+                SMACOutsideHDBits = SMACOutsideHDBits + SMACsentPacketInfo(i,5);
             else
-                FDduringHDBits = FDduringHDBits + FDsentPacketInfo(i,5);
+                SMACduringHDBits = SMACduringHDBits + SMACsentPacketInfo(i,5);
             end
         end
     else
-        results.FDnumMessagesLost = results.FDnumMessagesLost + 1;
+        results.SMACnumMessagesLost = results.SMACnumMessagesLost + 1;
         if (sentPacketInfo(i,2))
-            results.FDnumAckRequiredMessagesLost = results.FDnumAckRequiredMessagesLost + 1;
+            results.SMACnumAckRequiredMessagesLost = results.SMACnumAckRequiredMessagesLost + 1;
         end
     end
 end
 ack = latencies(isfinite(latencies) & ackRequired);
 nack = latencies(isfinite(latencies)& ~ackRequired);
-results.FDmeanLatency = [mean(nack) mean(ack)];
-results.FDsigmaLatency = [std(nack) std(ack)];
-results.FDmedianLatency = [median(nack) median(ack)];
-results.FDmaxLatency = [max(nack) max(ack)];
-results.FDminLatency = [min(nack) min(ack)];
-results.FDrawLatency = sort(latencies);
-results.FDThroughput = FDtotalBits/range(FDsentPacketInfo(:,3));
+results.SMACmeanLatency = [mean(nack) mean(ack)];
+results.SMACsigmaLatency = [std(nack) std(ack)];
+results.SMACmedianLatency = [median(nack) median(ack)];
+results.SMACmaxLatency = [max(nack) max(ack)];
+results.SMACminLatency = [min(nack) min(ack)];
+results.SMACrawLatency = sort(latencies);
+results.SMACThroughput = SMACtotalBits/range(SMACsentPacketInfo(:,3));
 if HD
     %now handle HD channel
     HDsentPacketInfo = sentPacketInfo(sentPacketInfo(:,1)>=1e5,:);
@@ -95,7 +95,7 @@ if HD
             HDtotalBits = HDtotalBits + HDsentPacketInfo(i,5);
         end
     end
-    results.FDNoHDThroughput = FDOutsideHDBits/(range(FDsentPacketInfo(:,3)) - (endHD - startHD));
-    results.FDDuringHDThroughput = FDduringHDBits / (endHD - startHD);
+    results.SMACNoHDThroughput = SMACOutsideHDBits/(range(SMACsentPacketInfo(:,3)) - (endHD - startHD));
+    results.SMACDuringHDThroughput = SMACduringHDBits / (endHD - startHD);
     results.HDThroughput = HDtotalBits / (endHD - startHD);
 end

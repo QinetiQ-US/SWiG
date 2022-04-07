@@ -1,28 +1,28 @@
 %> @brief node class
 %> @details class characterizing a modulator/demodulator with logic for
-%> transmitting, receiving, routing, scheduling transitions between FD/HD,
+%> transmitting, receiving, routing, scheduling transitions between SMAC/HD,
 %> validating packets, etc.
 classdef nodeClass < handle
 
-    %constants used to define state machine for FD <-> HD
+    %constants used to define state machine for SMAC <-> HD
     properties(Constant)
-        %> constant used to define state machine for FD <-> HD - idle
-        FDHDidle = 0;
-        %> constant used to define state machine for FD <-> HD - waiting as
+        %> constant used to define state machine for SMAC <-> HD - idle
+        SMACHDidle = 0;
+        %> constant used to define state machine for SMAC <-> HD - waiting as
         %> HD node
-        FDHDwaitingAsHDnode = 1;
-        %> constant used to define state machine for FD <-> HD - waiting as
+        SMACHDwaitingAsHDnode = 1;
+        %> constant used to define state machine for SMAC <-> HD - waiting as
         %> HD node
-        FDHDwaitingAsFDnode = 2;
-        %> constant used to define state machine for FD <-> HD - actively
+        SMACHDwaitingAsSMACnode = 2;
+        %> constant used to define state machine for SMAC <-> HD - actively
         %> running as HD
-        FDHDactiveAsHDnode = 3;
-        %> constant used to define state machine for FD <-> HD - actively
-        %> running ad FD node
-        FDHDactiveAsFDnode = 4;
-        %> constant used to define state machine for FD <-> HD - handling
+        SMACHDactiveAsHDnode = 3;
+        %> constant used to define state machine for SMAC <-> HD - actively
+        %> running ad SMAC node
+        SMACHDactiveAsSMACnode = 4;
+        %> constant used to define state machine for SMAC <-> HD - handling
         %> configuration message
-        FDHDchannelConfigMsgID = -3;  %special, special, special
+        SMACHDchannelConfigMsgID = -3;  %special, special, special
     end
 
     properties
@@ -64,16 +64,16 @@ classdef nodeClass < handle
         ACKrebroadcastTime;
         %> full list of node numbers we have discovered
         completeListOfNodes;
-        %> structure containing configuration information for FD/HD
+        %> structure containing configuration information for SMAC/HD
         %>events.  Elements:<br>
         %>rememberedBandwidthFraction <br>
         %> rememberedCenterFrequency<br>
         %> timeToStar<br>
         %> timeToEnd<br>
-        %> newFDcenterFrequency<br>
-        %> newFDbandwidthFraction<br>
+        %> newSMACcenterFrequency<br>
+        %> newSMACbandwidthFraction<br>
         %> state<br>
-        FDeventStructure;
+        SMACeventStructure;
     end
 
     methods
@@ -106,7 +106,7 @@ classdef nodeClass < handle
             obj.waitingCSMA = false;
             obj.ACKrebroadcastTime = 30;  %how long to wait to retry if no ACK
             obj.ACKremovalAge = 0.8 * obj.ACKrebroadcastTime;  %how long to wait after routed repeat to remove ACK request
-            obj.FDeventStructure.state = obj.FDHDidle;  %nothing happening here
+            obj.SMACeventStructure.state = obj.SMACHDidle;  %nothing happening here
             if nargin < 5
                 ourChannelModel = reliableAcousticPathModel;
             end
@@ -170,66 +170,66 @@ classdef nodeClass < handle
             result = obj.packetDequeAwaitingAck.packets;
         end
 
-        %> @brief handle received FD/HD configuration messages
+        %> @brief handle received SMAC/HD configuration messages
         %> @details If configuration message, and it's for us, set the
         %> event structure
         %> @param [in] obj - the node object
         %> @param [in] packets - array of packets containging config
         %> messages
         %> @retval obj - modified node object with updated event structure
-        function obj = handleReceivedFDConfigurationMessages(obj,packets)
+        function obj = handleReceivedSMACConfigurationMessages(obj,packets)
             for i = 1:length(packets)
                 packet = packets(i);
-                if packet.getIDsend == obj.FDHDchannelConfigMsgID
+                if packet.getIDsend == obj.SMACHDchannelConfigMsgID
                     %configure ourselves to reconfigure
                     msg = packet.getData;
-                    obj.FDeventStructure.rememberedBandwidthFraction = obj.activeModulator.getBandwidthFraction;
-                    obj.FDeventStructure.rememberedCenterFrequency = obj.activeModulator.getCenterFrequency;
-                    obj.FDeventStructure.timeToStart = msg.timeToStart;
-                    obj.FDeventStructure.timeToEnd = msg.timeToEnd;
-                    obj.FDeventStructure.newFDcenterFrequency = msg.newFDcenterFrequency;
-                    obj.FDeventStructure.newFDbandwidthFraction = msg.newFDbandwidthFraction;
-                    obj.FDeventStructure.state = obj.FDHDwaitingAsFDnode;
+                    obj.SMACeventStructure.rememberedBandwidthFraction = obj.activeModulator.getBandwidthFraction;
+                    obj.SMACeventStructure.rememberedCenterFrequency = obj.activeModulator.getCenterFrequency;
+                    obj.SMACeventStructure.timeToStart = msg.timeToStart;
+                    obj.SMACeventStructure.timeToEnd = msg.timeToEnd;
+                    obj.SMACeventStructure.newSMACcenterFrequency = msg.newSMACcenterFrequency;
+                    obj.SMACeventStructure.newSMACbandwidthFraction = msg.newSMACbandwidthFraction;
+                    obj.SMACeventStructure.state = obj.SMACHDwaitingAsSMACnode;
                 end
             end
         end
 
-        %> @brief handle FD/HD configuration changes
+        %> @brief handle SMAC/HD configuration changes
         %> @details - state machine for changing modulators, bandwidths,
-        %> center frequencies, HD/FD channel mode based on configuration
+        %> center frequencies, HD/SMAC channel mode based on configuration
         %> structure and present time
         %> @param [in] obj - node object
         %> @param [in] time - present time in seconds
         %> @retval modified node object
-        function obj = handleFDConfigurationChanges(obj,time)
-            switch obj.FDeventStructure.state
-                case obj.FDHDwaitingAsFDnode  %FD node waiting, if it's time -> active, reconfigure new FD
-                    if time >= obj.FDeventStructure.timeToStart
-                        obj.activeModulator.setCenterFrequency(obj.FDeventStructure.newFDcenterFrequency);
-                        obj.activeModulator.setBandwidthFraction(obj.FDeventStructure.newFDbandwidthFraction);
-                        obj.FDeventStructure.state = obj.FDHDactiveAsFDnode;
+        function obj = handleSMACConfigurationChanges(obj,time)
+            switch obj.SMACeventStructure.state
+                case obj.SMACHDwaitingAsSMACnode  %SMAC node waiting, if it's time -> active, reconfigure new SMAC
+                    if time >= obj.SMACeventStructure.timeToStart
+                        obj.activeModulator.setCenterFrequency(obj.SMACeventStructure.newSMACcenterFrequency);
+                        obj.activeModulator.setBandwidthFraction(obj.SMACeventStructure.newSMACbandwidthFraction);
+                        obj.SMACeventStructure.state = obj.SMACHDactiveAsSMACnode;
                     end
-                case obj.FDHDactiveAsFDnode  %FD node active, if done, recover
-                    if time >= obj.FDeventStructure.timeToEnd
-                        obj.activeModulator.setCenterFrequency(obj.FDeventStructure.rememberedCenterFrequency);
-                        obj.activeModulator.setBandwidthFraction(obj.FDeventStructure.rememberedBandwidthFraction);
-                        obj.FDeventStructure.state = obj.FDHDidle;
+                case obj.SMACHDactiveAsSMACnode  %SMAC node active, if done, recover
+                    if time >= obj.SMACeventStructure.timeToEnd
+                        obj.activeModulator.setCenterFrequency(obj.SMACeventStructure.rememberedCenterFrequency);
+                        obj.activeModulator.setBandwidthFraction(obj.SMACeventStructure.rememberedBandwidthFraction);
+                        obj.SMACeventStructure.state = obj.SMACHDidle;
                     end
-                case obj.FDHDwaitingAsHDnode  %HD node waiting, if its's time -> active, reconfigure, push messages
-                    if time >= obj.FDeventStructure.timeToStart
-                        obj.FDeventStructure.rememberedModulator = copy(obj.activeModulator);
-                        obj.setModulator(obj.FDeventStructure.HDmodulatorIndex);
-                        obj.setCenterFrequency(obj.FDeventStructure.HDCenterFrequency);
-                        obj.setBandwidthFraction(obj.FDeventStructure.HDBandwidthFraction);
-                        obj.FDeventStructure.state = obj.FDHDactiveAsHDnode;
-                        for i = 1:length(obj.FDeventStructure.HDMessageList)
-                            obj.pushPacketsToSend(obj.FDeventStructure.HDMessageList{i});
+                case obj.SMACHDwaitingAsHDnode  %HD node waiting, if its's time -> active, reconfigure, push messages
+                    if time >= obj.SMACeventStructure.timeToStart
+                        obj.SMACeventStructure.rememberedModulator = copy(obj.activeModulator);
+                        obj.setModulator(obj.SMACeventStructure.HDmodulatorIndex);
+                        obj.setCenterFrequency(obj.SMACeventStructure.HDCenterFrequency);
+                        obj.setBandwidthFraction(obj.SMACeventStructure.HDBandwidthFraction);
+                        obj.SMACeventStructure.state = obj.SMACHDactiveAsHDnode;
+                        for i = 1:length(obj.SMACeventStructure.HDMessageList)
+                            obj.pushPacketsToSend(obj.SMACeventStructure.HDMessageList{i});
                         end
                     end
-                case obj.FDHDactiveAsHDnode  %HD node active, if done, recover
-                    if time >= obj.FDeventStructure.timeToEnd
-                        obj.activeModulator = copy(obj.FDeventStructure.rememberedModulator);
-                        obj.FDeventStructure.state = obj.FDHDidle;
+                case obj.SMACHDactiveAsHDnode  %HD node active, if done, recover
+                    if time >= obj.SMACeventStructure.timeToEnd
+                        obj.activeModulator = copy(obj.SMACeventStructure.rememberedModulator);
+                        obj.SMACeventStructure.state = obj.SMACHDidle;
                     end
             end
         end
@@ -300,8 +300,8 @@ classdef nodeClass < handle
         %> @details Call this for the node that will be the HD transmitter.
         %> This will send messages to all nodes - telling them time to
         %> reconfigure for use of HD channel, duration of time for use of
-        %> HD channel, new center frequency for FD channel, new bandwidth
-        %> fraction for FD channel, center frequency for HD channel,
+        %> HD channel, new center frequency for SMAC channel, new bandwidth
+        %> fraction for SMAC channel, center frequency for HD channel,
         %> bandwidth fraction for HD channel, index into the modulator
         %> array for the HD modulator, and an array of packets that will be
         %> sent by the HD transmitting node. Directly sets the event
@@ -312,10 +312,10 @@ classdef nodeClass < handle
         %> @param [in] duration - duration in seconds for use of HD
         %> @param [in] fullNodeList - list of integer node IDs for whole
         %> network requiring configuration
-        %> @param [in] newFDcenterFrequency - new center frequency for FD
+        %> @param [in] newSMACcenterFrequency - new center frequency for SMAC
         %> operation during HDin Hz
-        %> @param[in] newFDbandwidthFraction - new fractional bandwidth for
-        %> FD operation during HD
+        %> @param[in] newSMACbandwidthFraction - new fractional bandwidth for
+        %> SMAC operation during HD
         %> @param [in] HDDestination - destination node number for HD
         %> @param [in] HDCenterFrequency - center frequency in Hz for HD
         %> modulator
@@ -325,35 +325,35 @@ classdef nodeClass < handle
         %> modulators for HD operation
         %> @param [in] HDMessageList - array of packets to be transmitted
         %> @retval obj - modified node object
-        function obj = scheduleHDChannelEvent(obj,time,duration,fullNodeList,newFDcenterFrequency,...
-                newFDbandwidthFraction,HDDestination,HDCenterFrequency,HDBandwidthFraction,HDmodulatorIndex,HDMessageList)
-            obj.FDeventStructure.state = obj.FDHDwaitingAsHDnode;  %waiting to grab the channel
-            obj.FDeventStructure.timeToStart = time; %
-            obj.FDeventStructure.timeToEnd = obj.FDeventStructure.timeToStart + duration;
-            obj.FDeventStructure.fullNodeList = fullNodeList;
-            obj.FDeventStructure.newFDcenterFrequency = newFDcenterFrequency;
-            obj.FDeventStructure.newFDbandwidthFraction = newFDbandwidthFraction;
-            obj.FDeventStructure.HDDestination = HDDestination;
-            obj.FDeventStructure.HDCenterFrequency = HDCenterFrequency;
-            obj.FDeventStructure.HDBandwidthFraction = HDBandwidthFraction;
-            obj.FDeventStructure.HDmodulatorIndex = HDmodulatorIndex;
-            obj.FDeventStructure.HDMessageList = HDMessageList;
-            obj.FDeventStructure.messagesSent = false(size(HDMessageList));
-            obj.FDeventStructure.ACKSreceived = false(size(fullNodeList));
+        function obj = scheduleHDChannelEvent(obj,time,duration,fullNodeList,newSMACcenterFrequency,...
+                newSMACbandwidthFraction,HDDestination,HDCenterFrequency,HDBandwidthFraction,HDmodulatorIndex,HDMessageList)
+            obj.SMACeventStructure.state = obj.SMACHDwaitingAsHDnode;  %waiting to grab the channel
+            obj.SMACeventStructure.timeToStart = time; %
+            obj.SMACeventStructure.timeToEnd = obj.SMACeventStructure.timeToStart + duration;
+            obj.SMACeventStructure.fullNodeList = fullNodeList;
+            obj.SMACeventStructure.newSMACcenterFrequency = newSMACcenterFrequency;
+            obj.SMACeventStructure.newSMACbandwidthFraction = newSMACbandwidthFraction;
+            obj.SMACeventStructure.HDDestination = HDDestination;
+            obj.SMACeventStructure.HDCenterFrequency = HDCenterFrequency;
+            obj.SMACeventStructure.HDBandwidthFraction = HDBandwidthFraction;
+            obj.SMACeventStructure.HDmodulatorIndex = HDmodulatorIndex;
+            obj.SMACeventStructure.HDMessageList = HDMessageList;
+            obj.SMACeventStructure.messagesSent = false(size(HDMessageList));
+            obj.SMACeventStructure.ACKSreceived = false(size(fullNodeList));
             %create and queue the messages to change modes
             msg.source = obj.ID;
-            msg.timeToStart = obj.FDeventStructure.timeToStart;
-            msg.timeToEnd = obj.FDeventStructure.timeToEnd;
-            msg.newFDcenterFrequency = obj.FDeventStructure.newFDcenterFrequency;
-            msg.newFDbandwidthFraction = obj.FDeventStructure.newFDbandwidthFraction;
+            msg.timeToStart = obj.SMACeventStructure.timeToStart;
+            msg.timeToEnd = obj.SMACeventStructure.timeToEnd;
+            msg.newSMACcenterFrequency = obj.SMACeventStructure.newSMACcenterFrequency;
+            msg.newSMACbandwidthFraction = obj.SMACeventStructure.newSMACbandwidthFraction;
             for i=1:length(fullNodeList)
                 %create packet (unless it's us)
                 if (fullNodeList(i) ~= obj.ID)
-                    pkt = packetClass(obj.activeModulator,obj.ID,fullNodeList(i),true,obj.FDHDchannelConfigMsgID,-1,msg);
+                    pkt = packetClass(obj.activeModulator,obj.ID,fullNodeList(i),true,obj.SMACHDchannelConfigMsgID,-1,msg);
                     obj.pushPacketsToSend(pkt);
                 else
                     %we don't need an ACK, we're in charge
-                    obj.FDeventStructure.ACKSreceived(i) = true;
+                    obj.SMACeventStructure.ACKSreceived(i) = true;
                 end
             end
         end
@@ -377,7 +377,7 @@ classdef nodeClass < handle
             %now, see if we need to relay anything
             for i=1:length(receivedPackets)
                 pkt=copy(receivedPackets(i));
-                %only consider it if it is in the FD channel
+                %only consider it if it is in the SMAC channel
                 if pkt.getModulator.isHDModulator
                     continue;
                 end
@@ -434,7 +434,7 @@ classdef nodeClass < handle
             %now, see if we need to relay anything
             for i=1:length(receivedPackets)
                 pkt=copy(receivedPackets(i));
-                %only consider it if it is in the FD channel
+                %only consider it if it is in the SMAC channel
                 if pkt.getModulator.isHDModulator
                     continue;
                 end
@@ -664,8 +664,8 @@ classdef nodeClass < handle
             obj.ACKasNeeded(receivedPackets,time);
             obj.forwardStoredAsNeeded(receivedPackets,time);
             obj.forwardMeshAsNeeded(receivedPackets,time);
-            obj.handleReceivedFDConfigurationMessages(receivedPackets);
-            obj.handleFDConfigurationChanges(time);
+            obj.handleReceivedSMACConfigurationMessages(receivedPackets);
+            obj.handleSMACConfigurationChanges(time);
             localSendingPacket = obj.sendAsNeeded(time,amReceiving);
         end
 
