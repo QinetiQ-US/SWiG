@@ -14,6 +14,7 @@
 %> modulatorClass - abstract class encapsulating modulator behaviors<br>
 %> packetClass - class encapsulating behaviors of packets<br>
 %> nodeClass - class encapsulating behavior of a node<br>
+%> equipmentNoiseClass - class implementing equipment interference model
 %> Other classes are defined to help implement these. Other classes (in
 %> particular specific modulators) inherit from these classes.
 %> @section samples Sample Scripts
@@ -30,4 +31,5 @@
 %>runSMACHDtest.m - sample script showing how to configure and run multiple
 %> simulations of HD scheduling and use. This is parallelized, and can be
 %> run on a computer with 4 or more cores without changing the "parfor"
-%> construct.
+%> construct.<br>
+%>runEequipmentIterference.m - shows how to use equipmentNoiseClass

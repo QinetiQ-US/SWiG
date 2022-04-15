@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['qpskmodulator_0',['QPSKModulator',['../class_q_p_s_k_modulator.html#aba085b75d39784301c4eedd6cabfb9df',1,'QPSKModulator']]]
+  ['ofdm64qam3_5f4modulator_0',['OFDM64QAM3_4Modulator',['../class_o_f_d_m64_q_a_m3__4_modulator.html#a3bfa21e3f744223e6cee2d209c746850',1,'OFDM64QAM3_4Modulator']]]
 ];

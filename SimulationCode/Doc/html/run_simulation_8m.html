@@ -72,13 +72,13 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a6e3ea0c47d6c7e4839af663caa450ae1"><td class="memItemLeft" align="right" valign="top">function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="run_simulation_8m.html#a6e3ea0c47d6c7e4839af663caa450ae1">runSimulation</a> (in nodes, in timeToRun, in timeToFinish, in timeIncrement, in poissonSendInterval, in pAckNeeded)</td></tr>
-<tr class="memdesc:a6e3ea0c47d6c7e4839af663caa450ae1"><td class="mdescLeft">&#160;</td><td class="mdescRight">runs simulation with FD only  <a href="run_simulation_8m.html#a6e3ea0c47d6c7e4839af663caa450ae1">More...</a><br /></td></tr>
-<tr class="separator:a6e3ea0c47d6c7e4839af663caa450ae1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40ba7b119920cb25985cfdd2e9fb6cd0"><td class="memItemLeft" align="right" valign="top">function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="run_simulation_8m.html#a40ba7b119920cb25985cfdd2e9fb6cd0">runSimulation</a> (in nodes, in timeToRun, in timeToFinish, in timeIncrement, in poissonSendInterval, in pAckNeeded, in interferingEquipment)</td></tr>
+<tr class="memdesc:a40ba7b119920cb25985cfdd2e9fb6cd0"><td class="mdescLeft">&#160;</td><td class="mdescRight">runs simulation with SMAC only  <a href="run_simulation_8m.html#a40ba7b119920cb25985cfdd2e9fb6cd0">More...</a><br /></td></tr>
+<tr class="separator:a40ba7b119920cb25985cfdd2e9fb6cd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a6e3ea0c47d6c7e4839af663caa450ae1" name="a6e3ea0c47d6c7e4839af663caa450ae1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6e3ea0c47d6c7e4839af663caa450ae1">&#9670;&nbsp;</a></span>runSimulation()</h2>
+<a id="a40ba7b119920cb25985cfdd2e9fb6cd0" name="a40ba7b119920cb25985cfdd2e9fb6cd0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a40ba7b119920cb25985cfdd2e9fb6cd0">&#9670;&nbsp;</a></span>runSimulation()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -117,7 +117,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">in&#160;</td>
-          <td class="paramname"><em>pAckNeeded</em>&#160;</td>
+          <td class="paramname"><em>pAckNeeded</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">in&#160;</td>
+          <td class="paramname"><em>interferingEquipment</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -127,7 +133,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>runs simulation with FD only </p>
+<p>runs simulation with SMAC only </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">nodes</td><td>is a cell array containing the nodes in the network </td></tr>
@@ -136,6 +142,7 @@ Functions</h2></td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">timeIncrement</td><td>is increment time in seconds for simulation </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">poissonSendInterval</td><td>is lambda in seconds for average packet </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">pAckNeeded</td><td>is probability any given message is critical </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">interferingEquipment</td><td>- array of <a class="el" href="classequipment_noise_class.html" title="equipment noise class">equipmentNoiseClass</a> (optional) argument </td></tr>
   </table>
   </dd>
 </dl>
@@ -152,7 +159,7 @@ Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 6 2022 16:32:26 for SWiG Protocol Simulation Tools by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3
+Generated on Fri Apr 15 2022 12:58:55 for SWiG Protocol Simulation Tools by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3
 </small></address>
 </body>
 </html>

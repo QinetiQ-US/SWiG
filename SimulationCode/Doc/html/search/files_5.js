@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['nodeclass_2em_0',['nodeClass.m',['../node_class_8m.html',1,'']]]
+  ['genericdsssmodulator_2em_0',['genericDSSSModulator.m',['../generic_d_s_s_s_modulator_8m.html',1,'']]]
 ];

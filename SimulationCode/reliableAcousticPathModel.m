@@ -48,6 +48,8 @@ classdef reliableAcousticPathModel < channelModelClass
         function [loss, propagationTime] = transmissionLoss(obj,sendLocation, receiveLocation, f)
             %compute distance in meters
             d = norm(sendLocation - receiveLocation);
+            %never let two items be less than a meter apart
+            d = max(1,d);
             %transmission loss 1/r^2
             TL = 20 * log10(d);
             %compute absorption loss

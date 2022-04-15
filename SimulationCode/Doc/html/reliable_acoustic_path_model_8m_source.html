@@ -101,31 +101,33 @@ $(function() {
 <div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>        function [loss, propagationTime] = transmissionLoss(obj,sendLocation, receiveLocation, f)</div>
 <div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>            %compute distance in meters</div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>            d = norm(sendLocation - receiveLocation);</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>            %transmission loss 1/r^2</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>            TL = 20 * log10(d);</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>            %compute absorption loss</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>            absorption = obj.absorption(f);</div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>            TL = TL + absorption * d;</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>            %make a random failure happen</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>            thisRealization = rand(1,1);</div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>            if thisRealization &lt; obj.pFail</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>                TL = TL + 200;  %so much loss we&#39;ll never recover</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>            end</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>            loss = TL;</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>            %and prop time</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>            c=1500;  %approximate speed of sound in seawater</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>            propagationTime = d/c;</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>        end</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span> </div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno"><a class="line" href="classreliable_acoustic_path_model.html#aac93708b653c097e634fcb75051884d1">   53</a></span>    end</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>            %never let two items be less than a meter apart</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>            d = max(1,d);</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>            %transmission loss 1/r^2</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>            TL = 20 * log10(d);</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>            %compute absorption loss</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>            absorption = obj.absorption(f);</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>            TL = TL + absorption * d;</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>            %make a random failure happen</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>            thisRealization = rand(1,1);</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>            if thisRealization &lt; obj.pFail</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>                TL = TL + 200;  %so much loss we&#39;ll never recover</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>            end</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>            loss = TL;</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>            %and prop time</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>            c=1500;  %approximate speed of sound in seawater</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>            propagationTime = d/c;</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno"><a class="line" href="classreliable_acoustic_path_model.html#aac93708b653c097e634fcb75051884d1">   53</a></span>        end</div>
 <div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span> </div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>end</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    end</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>end</div>
 <div class="ttc" id="aclasschannel_model_class_html"><div class="ttname"><a href="classchannel_model_class.html">channelModelClass</a></div><div class="ttdoc">Channel model class - Abstract class.</div><div class="ttdef"><b>Definition:</b> <a href="channel_model_class_8m_source.html#l00003">channelModelClass.m:4</a></div></div>
 <div class="ttc" id="aclassreliable_acoustic_path_model_html"><div class="ttname"><a href="classreliable_acoustic_path_model.html">reliableAcousticPathModel</a></div><div class="ttdoc">reliable acoustic path channel model details - assumes that communications are in the so-called RAP-b...</div><div class="ttdef"><b>Definition:</b> <a href="reliable_acoustic_path_model_8m_source.html#l00009">reliableAcousticPathModel.m:10</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 6 2022 16:32:25 for SWiG Protocol Simulation Tools by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3
+Generated on Fri Apr 15 2022 12:58:54 for SWiG Protocol Simulation Tools by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3
 </small></address>
 </body>
 </html>

@@ -1,0 +1,5 @@
+<map id="BPSKModulator" name="BPSKModulator">
+<area shape="rect" id="node1" title="BPSK high&#45;speed HD modulator/demodulator." alt="" coords="29,155,144,181"/>
+<area shape="rect" id="node2" href="$classmodulator_class.html" title="Modulator class &#45; Abstract class." alt="" coords="31,80,143,107"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,5,168,32"/>
+</map>

@@ -651,14 +651,20 @@ classdef nodeClass < handle
         %> the configuration state machine, works on sending packets
         %> @param [in] obj - the node object
         %> @param [in] time - present time in seconds
+        %> @param [in] equipmentNoiseObjects - array of equipmentNoiseClass
+        %> objects generating interference - can be null or even optional
         %> @retval receivedPackets - array of any completed received
         %> packets (valid only)
         %> @retval localSendingPacket - packet we're sending now (empty
         %> otherwise)
         %> @retval obj - modified node object
-        function [receivedPackets,localSendingPacket,obj] = run(obj,time)
+        function [receivedPackets,localSendingPacket,obj] = run(obj,time,equipmentNoiseObjects)
+            %handle case of no noise objects
+            if nargin < 3
+                equipmentNoiseObjects = [];
+            end
             %first, do the easy thing and go handle receiving
-            [receivedPackets, amReceiving] = obj.receivingPackets(time);
+            [receivedPackets, amReceiving] = obj.receivingPackets(time, equipmentNoiseObjects);
             obj.handleTimedOutACKS(time);
             obj.handleReceivedACKS(receivedPackets);
             obj.ACKasNeeded(receivedPackets,time);
@@ -672,10 +678,12 @@ classdef nodeClass < handle
         %> @brief receive packets - check to see if valid
         %> @param [in] obj - the node object
         %> @param [in] time - present time in seconds
+        %> @param [in] equipmentNoiseObjects - array of equipmentNoiseClass
+        %> for equipment causing interference
         %> @retval goodPackets - array of packets that have been validated
         %> @retval receiving - boolean if message arriving now
         %> @retval obj - the node object
-        function [goodPackets, receiving, obj] = receivingPackets(obj,time)
+        function [goodPackets, receiving, obj] = receivingPackets(obj,time, equipmentNoiseObjects)
             %assume not receiving
             receiving = false;
             [packets, validities, indices] = obj.packetDequeReceiving.packets;
@@ -713,7 +721,7 @@ classdef nodeClass < handle
             validities = validities(packetsOfInterest);
             finished = finished(packetsOfInterest);
             indices=indices(packetsOfInterest);
-            validities = obj.validatePackets(packets,validities,finished,time);
+            validities = obj.validatePackets(packets,validities,finished,time,equipmentNoiseObjects);
             %invalidate all bad packets that are incomplete
             whichIndices = indices(~validities & ~finished);
             for i = 1:length(whichIndices)
@@ -750,9 +758,11 @@ classdef nodeClass < handle
         %> @param [in] finished - boolean array indicating whether packet
         %> has finished arriving
         %> @param [in] time - present time in seconds
+        %> @param [in] equipmentNoiseObjects - list of equipmentNoiseClass
+        %> objects causing interference - can be null
         %> @retval validities - boolian array indicating which packets have
         %> been invalidated so far (marked with fals)
-        function validities = validatePackets(obj,packets, validities, finished, time)
+        function validities = validatePackets(obj,packets, validities, finished, time, equipmentNoiseObjects)
             if isempty(packets)
                 return;
             end
@@ -764,12 +774,18 @@ classdef nodeClass < handle
             else
                 baseInterference = 0;
             end
+            thisModulatorInterferenceMitigation = 10^(-0.1*obj.activeModulator.getInterferenceMitigation);
             %now, for each unfinished packet, go compute the interference
             unfinishedPackets = find(~finished);
             for i = 1:length(unfinishedPackets)
                 thisPacket=packets(unfinishedPackets(i));
                 signalin_dB = thisPacket.getSignalLevel;
                 interference = baseInterference;
+                %if same as our own, reduce
+                if obj.activeModulator == thisPacket.getModulator
+                    interference = interference *thisModulatorInterferenceMitigation;
+                end
+                myInterferenceRejection = 10^(-0.1*thisPacket.getModulator.getInterferenceMitigation);
                 startTime = thisPacket.getPacketStart + ...
                     thisPacket.getPacketDelay;
                 endTime = startTime + thisPacket.getPacketDuration;
@@ -783,15 +799,25 @@ classdef nodeClass < handle
                             overlapFraction = 0;
                         end
                         interferenceFraction = thisPacket.getModulator.getBandOverlapFraction(thatPacket.getModulator);
-                        interference = interference + (10^(0.1*thatPacket.getSignalLevel))*interferenceFraction*overlapFraction;
+                        thisInterference = (10^(0.1*thatPacket.getSignalLevel))*interferenceFraction*overlapFraction;
+                        if thisPacket.getModulator == thatPacket.getModulator
+                            thisInterference = thisInterference * myInterferenceRejection;
+                        end
+                        interference = interference + thisInterference;
                     end
                 end
-                %now, reduce interference by the interference rejection for
-                %this modulator
-                interference = interference * 10^(-0.1*packets(unfinishedPackets(i)).getModulator.getInterferenceMitigation);
                 %convert interference to PSD
                 BW = packets(unfinishedPackets(i)).getModulator.getBandwidth;
                 interferencePSD = interference/BW;
+                %add in any equipment interference that exists
+                for equip = 1:length(equipmentNoiseObjects)
+                    %get PSD of the radiator
+                    F0 = thisPacket.getModulator.getCenterFrequency;
+                    PSD = equipmentNoiseObjects(equip).getPSD(F0);
+                    %get transmission loss
+                    TL = obj.channelModel.transmissionLoss(equipmentNoiseObjects(equip).getLocation,obj.getLocation(time),F0);
+                    interference = interference + 10^(0.1*(PSD-TL));
+                end
                 %go get noise level
                 f = packets(unfinishedPackets(i)).getModulator.getCenterFrequency;
                 noiseLevel = 10^(0.1*obj.channelModel.noiseLevel(f));

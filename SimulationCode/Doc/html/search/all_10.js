@@ -1,7 +1,7 @@
 var searchData=
 [
   ['salinity_0',['salinity',['../classchannel_model_class.html#a93c693f9bca302ebb52879a79dbcde3e',1,'channelModelClass']]],
-  ['schedulehdchannelevent_1',['scheduleHDChannelEvent',['../classnode_class.html#a112ced224cce1575ac7e9cb731d38caf',1,'nodeClass']]],
+  ['schedulehdchannelevent_1',['scheduleHDChannelEvent',['../classnode_class.html#a3a3a6241ae8f38a02cc359a5e35c7712',1,'nodeClass']]],
   ['selfcancellationin_5fdb_2',['selfCancellationIn_dB',['../classmodulator_class.html#ad919cee4c2f8fb6e31ee6636840be074',1,'modulatorClass']]],
   ['sendasneeded_3',['sendAsNeeded',['../classnode_class.html#a78ad69029068348c5a07c00d72b7b018',1,'nodeClass']]],
   ['sendingpacket_4',['sendingPacket',['../classnode_class.html#a339e5d9d745150a4cc247f7f5253d6b7',1,'nodeClass']]],
@@ -17,12 +17,19 @@ var searchData=
   ['setstoreandforwardtable_14',['setStoreAndForwardTable',['../classnode_class.html#a81c7c20b0f0a6cd878d8835372de463d',1,'nodeClass']]],
   ['signallevelatreceiver_15',['signalLevelAtReceiver',['../classpacket_class.html#a908a4815c4fb79d551e95b913731fa83',1,'packetClass']]],
   ['signalpowerin_5fdb_16',['signalPowerIn_dB',['../classmodulator_class.html#a752fb53415dc98bbcf53bb6be3a3b5a7',1,'modulatorClass']]],
-  ['source_17',['source',['../classpacket_class.html#ab7710477ca0409fc8aa87462cbf9d6fb',1,'packetClass']]],
-  ['startpacket_18',['startPacket',['../classpacket_class.html#a0aed82ebefeba8deb6b8df2e8ec04e36',1,'packetClass']]],
-  ['storeandforwardtable_19',['storeAndForwardTable',['../classnode_class.html#ae73fc6d6cb893df591356b01e13a541e',1,'nodeClass']]],
-  ['swig_20protocol_20simulation_20tools_20',['SWiG Protocol Simulation Tools',['../index.html',1,'']]],
-  ['swigmodulator_21',['SWIGModulator',['../class_s_w_i_g_modulator.html',1,'SWIGModulator'],['../class_s_w_i_g_modulator.html#a44ce70ca632180a1a724e8a25f0cb1d4',1,'SWIGModulator::SWIGModulator()']]],
-  ['swigmodulator_2em_22',['SWIGModulator.m',['../_s_w_i_g_modulator_8m.html',1,'']]],
-  ['swigprimitivemodulator_23',['SWIGPrimitiveModulator',['../class_s_w_i_g_primitive_modulator.html',1,'SWIGPrimitiveModulator'],['../class_s_w_i_g_primitive_modulator.html#a856921004586d4f1b12db302b1bbeb34',1,'SWIGPrimitiveModulator::SWIGPrimitiveModulator()']]],
-  ['swigprimitivemodulator_2em_24',['SWIGPrimitiveModulator.m',['../_s_w_i_g_primitive_modulator_8m.html',1,'']]]
+  ['smaceventstructure_17',['SMACeventStructure',['../classnode_class.html#ad48df63c4301d068ca15d1431c599520',1,'nodeClass']]],
+  ['smachdactiveashdnode_18',['SMACHDactiveAsHDnode',['../classnode_class.html#aa2abefd436dd520604f19a0d6d05891a',1,'nodeClass']]],
+  ['smachdactiveassmacnode_19',['SMACHDactiveAsSMACnode',['../classnode_class.html#a46ed73f8b07943f98ee605cf2f45a291',1,'nodeClass']]],
+  ['smachdchannelconfigmsgid_20',['SMACHDchannelConfigMsgID',['../classnode_class.html#a94e7379b301fee3a8a7ecf9d2cd5187b',1,'nodeClass']]],
+  ['smachdidle_21',['SMACHDidle',['../classnode_class.html#ab7475e95768a273bcd3d2de5a4900c84',1,'nodeClass']]],
+  ['smachdwaitingashdnode_22',['SMACHDwaitingAsHDnode',['../classnode_class.html#ade06324fc348b08ac3c77967489eebe3',1,'nodeClass']]],
+  ['smachdwaitingassmacnode_23',['SMACHDwaitingAsSMACnode',['../classnode_class.html#abab0443c3d39520e3bc6fae0369bbfe9',1,'nodeClass']]],
+  ['source_24',['source',['../classpacket_class.html#ab7710477ca0409fc8aa87462cbf9d6fb',1,'packetClass']]],
+  ['startpacket_25',['startPacket',['../classpacket_class.html#a0aed82ebefeba8deb6b8df2e8ec04e36',1,'packetClass']]],
+  ['storeandforwardtable_26',['storeAndForwardTable',['../classnode_class.html#ae73fc6d6cb893df591356b01e13a541e',1,'nodeClass']]],
+  ['swig_20protocol_20simulation_20tools_27',['SWiG Protocol Simulation Tools',['../index.html',1,'']]],
+  ['swigmodulator_28',['SWIGModulator',['../class_s_w_i_g_modulator.html#a44ce70ca632180a1a724e8a25f0cb1d4',1,'SWIGModulator::SWIGModulator()'],['../class_s_w_i_g_modulator.html',1,'SWIGModulator']]],
+  ['swigmodulator_2em_29',['SWIGModulator.m',['../_s_w_i_g_modulator_8m.html',1,'']]],
+  ['swigprimitivemodulator_30',['SWIGPrimitiveModulator',['../class_s_w_i_g_primitive_modulator.html',1,'SWIGPrimitiveModulator'],['../class_s_w_i_g_primitive_modulator.html#a856921004586d4f1b12db302b1bbeb34',1,'SWIGPrimitiveModulator::SWIGPrimitiveModulator()']]],
+  ['swigprimitivemodulator_2em_31',['SWIGPrimitiveModulator.m',['../_s_w_i_g_primitive_modulator_8m.html',1,'']]]
 ];

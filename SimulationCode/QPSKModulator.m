@@ -42,6 +42,11 @@ classdef QPSKModulator < modulatorClass
         function result = isHDModulator
             result = true;
         end
+        %> @brief SNR required for successful decoding
+        %> @retval result - value in dB Eb/N0
+        function result = EbOverN0Required()
+            result = 9;
+        end
     end
 
 

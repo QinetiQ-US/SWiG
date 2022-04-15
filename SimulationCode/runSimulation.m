@@ -6,6 +6,8 @@
 %> @param [in] timeIncrement is increment time in seconds for simulation
 %> @param [in] poissonSendInterval is lambda in seconds for average packet
 %> @param [in] pAckNeeded is probability any given message is critical
+%> @param [in] interferingEquipment - array of equipmentNoiseClass
+%> (optional) argument
 %> @retval sentPacketInfo an N x 6 consisting of
 %>  message number, logical for ACK needed, time packet was sent, modulator
 %> index for the message, message length in bits, and fractional bandwidth
@@ -13,7 +15,7 @@
 %> message ID, message ID for packet this is an ACK for (0 if none), time
 %> received
 function [sentPacketInfo,receivedPacketInfo] = runSimulation(nodes,timeToRun,...
-    timeToFinish,timeIncrement,poissonSendInterval,pAckNeeded)
+    timeToFinish,timeIncrement,poissonSendInterval,pAckNeeded,interferingEquipment)
 % function [sentPacketInfo,receivedPacketInfo] = runSimulation(nodes,timeToRun,...
 %     timeToFinish,timeIncrement,poissonSendInterval,pAckNeeded)
 %run a simulation of a network
@@ -26,9 +28,12 @@ function [sentPacketInfo,receivedPacketInfo] = runSimulation(nodes,timeToRun,...
 %                           messages (per node) in seconds
 %pAckNeeded             fraction of messages that will require ACK (again
 %                           Poisson, but on queued messages
+%interferingEquipment   array of equipmentNoiseClass (optional)
 
 
-
+if nargin <7
+    interferingEquipment = [];
+end
 
 receivedPacketInfo = [];
 sentPacketInfo =[];
@@ -47,7 +52,7 @@ for time = 0:timeIncrement:timeToRun
     sendingLocations = [];
     for i=1:length(nodes)
         %run the node to get received packets and sending packet
-        [rxthese,txthis] = nodes{i}.run(time);
+        [rxthese,txthis] = nodes{i}.run(time,interferingEquipment);
         %if we've got a packet addressed to this node, chalk up the success
         for j=1:length(rxthese)
             if rxthese(j).getDestination == i

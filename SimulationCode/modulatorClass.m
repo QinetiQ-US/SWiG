@@ -72,7 +72,7 @@ classdef modulatorClass < matlab.mixin.Copyable
 
         %> @brief set the signal power to other than default
         %> @param [in] obj - the object
-        %> @param [out] power - power level in dB
+        %> @param [in] power - power level in dB
         %> @retval out
         function obj = setSignalPower(obj,power)
             obj.signalPowerIn_dB = power;
@@ -177,6 +177,24 @@ classdef modulatorClass < matlab.mixin.Copyable
             end
         end
 
+        %> @brief modulator equality operator
+        %> @param [in] obj1 a modulator object
+        %> @param [in] obj2 another modulator object
+        %> @retval result - true of modulators of same type, same center
+        %>frequency, same bandwidth
+        function result = eq(obj1, obj2)
+            result = true;  %start assuming true
+            if ~strcmp(obj1.getModulatorType.style,obj2.getModulatorType.style)
+                result = false;  %false if different types
+            end
+            if obj1.bandwidthFraction ~= obj2.bandwidthFraction
+                result = false;  %false if not same bandwidth fraction
+            end
+            if obj1.centerFrequency ~= obj2.centerFrequency
+                result = false;
+            end
+        end
+
     end
 
     methods(Static)
@@ -187,7 +205,7 @@ classdef modulatorClass < matlab.mixin.Copyable
         %> @brief SNR required for successful decoding
         %> @retval result - value in dB Eb/N0
         function result = EbOverN0Required()
-            result = 8;
+            result = 9;
         end
     end
 

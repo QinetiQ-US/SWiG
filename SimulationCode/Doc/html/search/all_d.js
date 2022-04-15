@@ -17,6 +17,7 @@ var searchData=
   ['ph_14',['pH',['../classchannel_model_class.html#a83e89125085fe751f6f74ded303c8db7',1,'channelModelClass']]],
   ['pop_15',['pop',['../classpacket_f_i_f_o_class.html#a456ea7238aaedf7c5cae38411633d5d4',1,'packetFIFOClass']]],
   ['preamblecollisionfatal_16',['preambleCollisionFatal',['../classmodulator_class.html#af4c72605f508e4c36a79dd2083ceae34',1,'modulatorClass']]],
-  ['push_17',['push',['../classpacket_f_i_f_o_class.html#aec42bc8bf64ceb0cd1f08388a637f152',1,'packetFIFOClass']]],
-  ['pushpacketstosend_18',['pushPacketsToSend',['../classnode_class.html#a32bbcb1fb5e3c9bab109eda409fdb714',1,'nodeClass']]]
+  ['psd_17',['PSD',['../classequipment_noise_class.html#a62bf5ceaa91a0a9ab91d8a5e1cda0b51',1,'equipmentNoiseClass']]],
+  ['push_18',['push',['../classpacket_f_i_f_o_class.html#aec42bc8bf64ceb0cd1f08388a637f152',1,'packetFIFOClass']]],
+  ['pushpacketstosend_19',['pushPacketsToSend',['../classnode_class.html#a32bbcb1fb5e3c9bab109eda409fdb714',1,'nodeClass']]]
 ];

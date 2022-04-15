@@ -80,48 +80,48 @@ $(function() {
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>    HD = <span class="keyword">false</span>;</div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>end</div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>%handle FD channel first</div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>FDsentPacketInfo = sentPacketInfo(sentPacketInfo(:,1)&lt;1e5,:);</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>%handle SMAC channel first</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>SMACsentPacketInfo = sentPacketInfo(sentPacketInfo(:,1)&lt;1e5,:);</div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>%first, find number of messages sent</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>results.FDnumMessagesSent = size(FDsentPacketInfo,1);</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>results.SMACnumMessagesSent = size(SMACsentPacketInfo,1);</div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>%find number of lost messages and accumulate latency array</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>latencies = nan(size(FDsentPacketInfo,1),1);</div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>results.FDnumMessagesLost = 0;</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>results.FDnumAckRequiredMessages = sum(FDsentPacketInfo(:,2));</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>results.FDnumAckRequiredMessagesLost = 0;</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>FDtotalBits = 0;</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>FDduringHDBits = 0;</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="analyze_simulation_results_8m.html#a76811d6fad7396d578e4bf27657ddbc4">   27</a></span>FDOutsideHDBits = 0;</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>ackRequired = <span class="keyword">false</span>(length(FDsentPacketInfo),1);</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="keywordflow">for</span> i=1:length(FDsentPacketInfo)</div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    which = find(FDsentPacketInfo(i,1)==receivedPacketInfo(:,1),1,<span class="stringliteral">&#39;first&#39;</span>);</div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    ackRequired(i) = FDsentPacketInfo(i,2) ~= 0;</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>latencies = nan(size(SMACsentPacketInfo,1),1);</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>results.SMACnumMessagesLost = 0;</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>results.SMACnumAckRequiredMessages = sum(SMACsentPacketInfo(:,2));</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>results.SMACnumAckRequiredMessagesLost = 0;</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>SMACtotalBits = 0;</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>SMACduringHDBits = 0;</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="analyze_simulation_results_8m.html#a76811d6fad7396d578e4bf27657ddbc4">   27</a></span>SMACOutsideHDBits = 0;</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>ackRequired = <span class="keyword">false</span>(length(SMACsentPacketInfo),1);</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="keywordflow">for</span> i=1:length(SMACsentPacketInfo)</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    which = find(SMACsentPacketInfo(i,1)==receivedPacketInfo(:,1),1,<span class="stringliteral">&#39;first&#39;</span>);</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    ackRequired(i) = SMACsentPacketInfo(i,2) ~= 0;</div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    <span class="keywordflow">if</span> ~isempty(which)</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>        latencies(i) = receivedPacketInfo(which,3) - FDsentPacketInfo(i,3);</div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>        FDtotalBits = FDtotalBits + FDsentPacketInfo(i,5);</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>        latencies(i) = receivedPacketInfo(which,3) - SMACsentPacketInfo(i,3);</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>        SMACtotalBits = SMACtotalBits + SMACsentPacketInfo(i,5);</div>
 <div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>        <span class="keywordflow">if</span> HD</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>            <span class="keywordflow">if</span> FDsentPacketInfo(i,6)&gt;0.95</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>                FDOutsideHDBits = FDOutsideHDBits + FDsentPacketInfo(i,5);</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>            <span class="keywordflow">if</span> SMACsentPacketInfo(i,6)&gt;0.95</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>                SMACOutsideHDBits = SMACOutsideHDBits + SMACsentPacketInfo(i,5);</div>
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>            <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>                FDduringHDBits = FDduringHDBits + FDsentPacketInfo(i,5);</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>                SMACduringHDBits = SMACduringHDBits + SMACsentPacketInfo(i,5);</div>
 <div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>            end</div>
 <div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>        end</div>
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>        results.FDnumMessagesLost = results.FDnumMessagesLost + 1;</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>        results.SMACnumMessagesLost = results.SMACnumMessagesLost + 1;</div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>        <span class="keywordflow">if</span> (sentPacketInfo(i,2))</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>            results.FDnumAckRequiredMessagesLost = results.FDnumAckRequiredMessagesLost + 1;</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>            results.SMACnumAckRequiredMessagesLost = results.SMACnumAckRequiredMessagesLost + 1;</div>
 <div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>        end</div>
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    end</div>
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>end</div>
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>ack = latencies(isfinite(latencies) &amp; ackRequired);</div>
 <div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>nack = latencies(isfinite(latencies)&amp; ~ackRequired);</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>results.FDmeanLatency = [mean(nack) mean(ack)];</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>results.FDsigmaLatency = [std(nack) std(ack)];</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>results.FDmedianLatency = [median(nack) median(ack)];</div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>results.FDmaxLatency = [max(nack) max(ack)];</div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>results.FDminLatency = [min(nack) min(ack)];</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>results.FDrawLatency = sort(latencies);</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>results.FDThroughput = FDtotalBits/range(FDsentPacketInfo(:,3));</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>results.SMACmeanLatency = [mean(nack) mean(ack)];</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>results.SMACsigmaLatency = [std(nack) std(ack)];</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>results.SMACmedianLatency = [median(nack) median(ack)];</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>results.SMACmaxLatency = [max(nack) max(ack)];</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>results.SMACminLatency = [min(nack) min(ack)];</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>results.SMACrawLatency = sort(latencies);</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>results.SMACThroughput = SMACtotalBits/range(SMACsentPacketInfo(:,3));</div>
 <div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span><span class="keywordflow">if</span> HD</div>
 <div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    %now handle HD channel</div>
 <div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    HDsentPacketInfo = sentPacketInfo(sentPacketInfo(:,1)&gt;=1e5,:);</div>
@@ -138,15 +138,15 @@ $(function() {
 <div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>            HDtotalBits = HDtotalBits + HDsentPacketInfo(i,5);</div>
 <div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>        end</div>
 <div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    end</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    results.FDNoHDThroughput = FDOutsideHDBits/(range(FDsentPacketInfo(:,3)) - (endHD - startHD));</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    results.FDDuringHDThroughput = FDduringHDBits / (endHD - startHD);</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    results.SMACNoHDThroughput = SMACOutsideHDBits/(range(SMACsentPacketInfo(:,3)) - (endHD - startHD));</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    results.SMACDuringHDThroughput = SMACduringHDBits / (endHD - startHD);</div>
 <div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    results.HDThroughput = HDtotalBits / (endHD - startHD);</div>
 <div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>end</div>
 <div class="ttc" id="aanalyze_simulation_results_8m_html_a76811d6fad7396d578e4bf27657ddbc4"><div class="ttname"><a href="analyze_simulation_results_8m.html#a76811d6fad7396d578e4bf27657ddbc4">analyzeSimulationResults</a></div><div class="ttdeci">function analyzeSimulationResults(in sentPacketInfo, in receivedPacketInfo, in startHD, in durationOfHD)</div><div class="ttdoc">Analyze simulation results to produce statistical values.</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 6 2022 16:32:24 for SWiG Protocol Simulation Tools by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3
+Generated on Fri Apr 15 2022 12:58:52 for SWiG Protocol Simulation Tools by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3
 </small></address>
 </body>
 </html>

@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['swigmodulator_0',['SWIGModulator',['../class_s_w_i_g_modulator.html',1,'']]],
-  ['swigprimitivemodulator_1',['SWIGPrimitiveModulator',['../class_s_w_i_g_primitive_modulator.html',1,'']]]
+  ['packetclass_0',['packetClass',['../classpacket_class.html',1,'']]],
+  ['packetdequeclass_1',['packetDequeClass',['../classpacket_deque_class.html',1,'']]],
+  ['packetfifoclass_2',['packetFIFOClass',['../classpacket_f_i_f_o_class.html',1,'']]]
 ];

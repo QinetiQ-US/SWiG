@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['ebovern0required_0',['EbOverN0Required',['../classmodulator_class.html#a8f40600dd01b1a01cc189c210f757d95',1,'modulatorClass']]]
+  ['channelmodelclass_0',['channelModelClass',['../classchannel_model_class.html#a3f2bee6d92c53464e2d118ac1accf044',1,'channelModelClass']]],
+  ['copyelement_1',['copyElement',['../classpacket_class.html#abb9cface1c31c84aba08989943b19228',1,'packetClass']]]
 ];

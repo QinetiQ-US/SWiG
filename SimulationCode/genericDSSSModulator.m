@@ -39,6 +39,12 @@ classdef genericDSSSModulator < modulatorClass
         end
     end
 
-
+    methods(Static)
+        %> @brief SNR required for successful decoding
+        %> @retval result - value in dB Eb/N0
+        function result = EbOverN0Required()
+            result = 6;
+        end
+    end
 
 end

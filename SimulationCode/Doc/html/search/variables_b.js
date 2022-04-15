@@ -8,5 +8,6 @@ var searchData=
   ['packetlength_5',['packetLength',['../classmodulator_class.html#aa5429733dd1800742c961166392c654b',1,'modulatorClass']]],
   ['pfail_6',['pFail',['../classreliable_acoustic_path_model.html#a5c700afb62b3690c4629aeec3a3e6b8f',1,'reliableAcousticPathModel']]],
   ['ph_7',['pH',['../classchannel_model_class.html#a83e89125085fe751f6f74ded303c8db7',1,'channelModelClass']]],
-  ['preamblecollisionfatal_8',['preambleCollisionFatal',['../classmodulator_class.html#af4c72605f508e4c36a79dd2083ceae34',1,'modulatorClass']]]
+  ['preamblecollisionfatal_8',['preambleCollisionFatal',['../classmodulator_class.html#af4c72605f508e4c36a79dd2083ceae34',1,'modulatorClass']]],
+  ['psd_9',['PSD',['../classequipment_noise_class.html#a62bf5ceaa91a0a9ab91d8a5e1cda0b51',1,'equipmentNoiseClass']]]
 ];

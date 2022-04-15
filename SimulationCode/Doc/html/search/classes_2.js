@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['midbandmodulatorclass_0',['midBandModulatorClass',['../classmid_band_modulator_class.html',1,'']]],
-  ['modulatorclass_1',['modulatorClass',['../classmodulator_class.html',1,'']]]
+  ['equipmentnoiseclass_0',['equipmentNoiseClass',['../classequipment_noise_class.html',1,'']]]
 ];

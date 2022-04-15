@@ -74,18 +74,19 @@ Important Classes</h1>
  <a class="el" href="classmodulator_class.html" title="Modulator class - Abstract class.">modulatorClass</a> - abstract class encapsulating modulator behaviors<br  />
  <a class="el" href="classpacket_class.html" title="the class for packets">packetClass</a> - class encapsulating behaviors of packets<br  />
  <a class="el" href="classnode_class.html" title="node class">nodeClass</a> - class encapsulating behavior of a node<br  />
- Other classes are defined to help implement these. Other classes (in particular specific modulators) inherit from these classes. </p>
+ <a class="el" href="classequipment_noise_class.html" title="equipment noise class">equipmentNoiseClass</a> - class implementing equipment interference model Other classes are defined to help implement these. Other classes (in particular specific modulators) inherit from these classes. </p>
 <h1><a class="anchor" id="samples"></a>
 Sample Scripts</h1>
 <p >Several scripts are provided as practical examples for configuring and running network simulations.<br  />
  <a class="el" href="run_test_store_and_forward_8m.html">runTestStoreAndForward.m</a> - a sample script showing how to configure and run various store-and-forward networks. Utilizes parfor to parallelize running multiple simulations at once. Strongly suggested that this be run on a workstation with at least 12 physical cores - otherwise change "parfor" to "for"<br  />
  <a class="el" href="run_test_mesh_8m.html">runTestMesh.m</a> - sample script showing how to configure and run multiple mesh network configurations. Due to oddities of Matlab, this cannot readily be parallelized<br  />
- <a class="el" href="run_f_d_h_dtest_8m.html">runFDHDtest.m</a> - sample script showing how to configure and run multiple simulations of HD scheduling and use. This is parallelized, and can be run on a computer with 4 or more cores without changing the "parfor" construct. </p>
+ <a class="el" href="run_s_m_a_c_h_dtest_8m.html">runSMACHDtest.m</a> - sample script showing how to configure and run multiple simulations of HD scheduling and use. This is parallelized, and can be run on a computer with 4 or more cores without changing the "parfor" construct.<br  />
+ runEequipmentIterference.m - shows how to use <a class="el" href="classequipment_noise_class.html" title="equipment noise class">equipmentNoiseClass</a> </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 6 2022 16:32:26 for SWiG Protocol Simulation Tools by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3
+Generated on Fri Apr 15 2022 12:58:56 for SWiG Protocol Simulation Tools by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3
 </small></address>
 </body>
 </html>
