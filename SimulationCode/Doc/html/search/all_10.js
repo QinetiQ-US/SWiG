@@ -28,8 +28,10 @@ var searchData=
   ['startpacket_25',['startPacket',['../classpacket_class.html#a0aed82ebefeba8deb6b8df2e8ec04e36',1,'packetClass']]],
   ['storeandforwardtable_26',['storeAndForwardTable',['../classnode_class.html#ae73fc6d6cb893df591356b01e13a541e',1,'nodeClass']]],
   ['swig_20protocol_20simulation_20tools_27',['SWiG Protocol Simulation Tools',['../index.html',1,'']]],
-  ['swigmodulator_28',['SWIGModulator',['../class_s_w_i_g_modulator.html#a44ce70ca632180a1a724e8a25f0cb1d4',1,'SWIGModulator::SWIGModulator()'],['../class_s_w_i_g_modulator.html',1,'SWIGModulator']]],
-  ['swigmodulator_2em_29',['SWIGModulator.m',['../_s_w_i_g_modulator_8m.html',1,'']]],
-  ['swigprimitivemodulator_30',['SWIGPrimitiveModulator',['../class_s_w_i_g_primitive_modulator.html',1,'SWIGPrimitiveModulator'],['../class_s_w_i_g_primitive_modulator.html#a856921004586d4f1b12db302b1bbeb34',1,'SWIGPrimitiveModulator::SWIGPrimitiveModulator()']]],
-  ['swigprimitivemodulator_2em_31',['SWIGPrimitiveModulator.m',['../_s_w_i_g_primitive_modulator_8m.html',1,'']]]
+  ['swigimprovedmodulator_28',['SWIGImprovedModulator',['../class_s_w_i_g_improved_modulator.html#a138e86b0a65d2f2d4394a95e2aade921',1,'SWIGImprovedModulator::SWIGImprovedModulator()'],['../class_s_w_i_g_improved_modulator.html',1,'SWIGImprovedModulator']]],
+  ['swigimprovedmodulator_2em_29',['SWIGImprovedModulator.m',['../_s_w_i_g_improved_modulator_8m.html',1,'']]],
+  ['swigmodulator_30',['SWIGModulator',['../class_s_w_i_g_modulator.html',1,'SWIGModulator'],['../class_s_w_i_g_modulator.html#a44ce70ca632180a1a724e8a25f0cb1d4',1,'SWIGModulator::SWIGModulator()']]],
+  ['swigmodulator_2em_31',['SWIGModulator.m',['../_s_w_i_g_modulator_8m.html',1,'']]],
+  ['swigprimitivemodulator_32',['SWIGPrimitiveModulator',['../class_s_w_i_g_primitive_modulator.html',1,'SWIGPrimitiveModulator'],['../class_s_w_i_g_primitive_modulator.html#a856921004586d4f1b12db302b1bbeb34',1,'SWIGPrimitiveModulator::SWIGPrimitiveModulator()']]],
+  ['swigprimitivemodulator_2em_33',['SWIGPrimitiveModulator.m',['../_s_w_i_g_primitive_modulator_8m.html',1,'']]]
 ];

@@ -3,7 +3,7 @@
 <area shape="rect" id="node2" href="$classchannel_model_class.html" title="Channel model class &#45; Abstract class." alt="" coords="223,44,357,71"/>
 <area shape="rect" id="node4" href="$classequipment_noise_class.html" title="equipment noise class" alt="" coords="216,132,364,159"/>
 <area shape="rect" id="node5" href="$classmodulator_class.html" title="Modulator class &#45; Abstract class." alt="" coords="234,183,346,209"/>
-<area shape="rect" id="node15" href="$classpacket_class.html" title="the class for packets" alt="" coords="243,233,337,260"/>
+<area shape="rect" id="node16" href="$classpacket_class.html" title="the class for packets" alt="" coords="243,233,337,260"/>
 <area shape="rect" id="node3" href="$classreliable_acoustic_path_model.html" title="reliable acoustic path channel model details &#45; assumes that communications are in the so&#45;called RAP&#45;b..." alt="" coords="415,5,591,32"/>
 <area shape="rect" id="node6" href="$class_b_f_s_k_modulator.html" title="BFSK high&#45;speed HD modulator/demodulator." alt="" coords="446,56,561,83"/>
 <area shape="rect" id="node7" href="$class_b_p_s_k_c_d_m_a_modulator.html" title="BPSKCDMA high&#45;speed HD modulator/demodulator." alt="" coords="427,107,580,133"/>
@@ -12,6 +12,7 @@
 <area shape="rect" id="node10" href="$class_q_p_s_k_modulator.html" title="QPSK high&#45;speed HD modulator/demodulator." alt="" coords="445,259,561,285"/>
 <area shape="rect" id="node11" href="$classgeneric_d_s_s_s_modulator.html" title="Class for generic DSSSmodulator." alt="" coords="425,309,582,336"/>
 <area shape="rect" id="node12" href="$classmid_band_modulator_class.html" title="base class for SWiG type modulators" alt="" coords="422,360,585,387"/>
-<area shape="rect" id="node13" href="$class_s_w_i_g_modulator.html" title="Class for SWIG modulator." alt="" coords="667,335,781,361"/>
-<area shape="rect" id="node14" href="$class_s_w_i_g_primitive_modulator.html" title="Class for SWIG primitive modulator." alt="" coords="643,385,805,412"/>
+<area shape="rect" id="node13" href="$class_s_w_i_g_improved_modulator.html" title="Class for SWIG modulator." alt="" coords="643,309,808,336"/>
+<area shape="rect" id="node14" href="$class_s_w_i_g_modulator.html" title="Class for SWIG modulator." alt="" coords="668,360,783,387"/>
+<area shape="rect" id="node15" href="$class_s_w_i_g_primitive_modulator.html" title="Class for SWIG primitive modulator." alt="" coords="644,411,807,437"/>
 </map>
