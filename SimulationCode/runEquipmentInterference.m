@@ -1,8 +1,5 @@
 %> @brief Example script to run multiple store-and-forward network with
 %> equipment interference
-ModulatorList = {
-    genericDSSSModulator(false,false)
-    };
 nodeRange = 6000;
 numNodes = 15;
 rng(0);
@@ -18,52 +15,30 @@ for i=1:length(routingTableCollection)
     routingTableCollection{i}=[];
 end
 emptyRoutingTableCollection = routingTableCollection;
-repeaterNumberToTest = 2;
-modulatorIndexList = 1;
 % overallStats = cell(length(modulatorIndexList),1);
 % stats=cell(length(repeaterNumberToTest),1);
 % for modulatorIndex = 1:length(modulatorIndexList)
 %     thisModulator = modulatorIndexList(modulatorIndex);
 %     parfor repIndex = 1:length(repeaterNumberToTest)
-nReps=length(repeaterNumberToTest);
-nMods=length(modulatorIndexList);
-overallStats = cell(nMods*nReps,1);
+nReps=4;  %no interference, relatively quiet interference, LOUD interference, intermittent LOUD interference
+overallStats = cell(nReps,1);
 %go read in a sample equipment noise PSD function
-equipmentPSD = load('EquipmentInterferencePSD.txt','-ascii');
-for combinedIndex = 1:(nReps*nMods)
-    repIndex = 1+ rem(combinedIndex-1,nReps);
-    modulatorIndex = 1 + floor((combinedIndex-1)/nReps);
+interferenceData= readtable('InterferenceData.xls');
+equipmentPSD = [interferenceData.Frequency interferenceData.Case4];
+loudFieldPSD = [interferenceData.Frequency interferenceData.Case1];
+runtimes = [1000 1500];
+parfor testIndex = 1:nReps
+    noisyEquipment = [];
     rng(0);  %force repeatability, since we don't know which order things run
-    thisModulator = modulatorIndexList(modulatorIndex);  
-    numRepeaters = repeaterNumberToTest(repIndex);  
-    minRouteDistance = 0;
-    idealPoints=[]; %#ok<NASGU>
-    switch numRepeaters
-        case 4
-            % 4 repeaters
-            idealPoints =[
-                [nodeRange*(1/3) nodeRange*(1/3) 0.5*vertRange];...
-                [nodeRange*(1/3) nodeRange*(2/3) 0.5*vertRange];...
-                [nodeRange*(2/3) nodeRange*(1/3) 0.5*vertRange];...
-                [nodeRange*(2/3) nodeRange*(2/3) 0.5*vertRange]
-                ];
-            %set minimum route distance
-            minRouteDistance = 0.25 * nodeRange;
-        case 2
-            idealPoints =[
-                [nodeRange*(1/3) nodeRange*(1/3) 0.5*vertRange];...
-                [nodeRange*(2/3) nodeRange*(2/3) 0.5*vertRange];...
-                ];
-            %set minimum route distance
-            minRouteDistance = 0.15 * nodeRange;
-        case 1
-            idealPoints=[0.5*nodeRange 0.5*nodeRange 0.5*vertRange];
-            minRouteDistance = 0.15 * nodeRange;
-        case 0
-            idealPoints=[];
-        otherwise
-            error('Invalid number of repeaters')
-    end
+    thisModulator = genericDSSSModulator(false,false);
+    numRepeaters = 2;
+    %fixed at 2 repeaters
+    idealPoints =[
+        [nodeRange*(1/3) nodeRange*(1/3) 0.5*vertRange];...
+        [nodeRange*(2/3) nodeRange*(2/3) 0.5*vertRange];...
+        ];
+    %set minimum route distance
+    minRouteDistance = 0.15 * nodeRange;
     %set up the nodes
     maxQueueDepth = 1024;
     nodes = cell(numNodes,1);
@@ -76,15 +51,24 @@ for combinedIndex = 1:(nReps*nMods)
             myLocations(:,3) = myLocations(:,3)*vertRangeRatio;
             trajectory=[[0 myLocations(1,:)];...
                 [3000 myLocations(2,:)]];
-            nodes{i}=nodeClass(trajectory,ModulatorList,i,maxQueueDepth); %#ok<*SAGROW>
+            nodes{i}=nodeClass(trajectory,{thisModulator},i,maxQueueDepth); %#ok<*SAGROW>
         else
-            nodes{i}=nodeClass(locations(i,:),ModulatorList,i,maxQueueDepth); %#ok<*SAGROW>
+            nodes{i}=nodeClass(locations(i,:),{thisModulator},i,maxQueueDepth); %#ok<*SAGROW>
         end
-        nodes{i}.setModulator(thisModulator);
+        nodes{i}.setModulator(1);
         if i==6
             %special for node 6 - we're going to put it right near some noisy
             %equipment
-            noisyEquipment = equipmentNoiseClass(locations(i,:),equipmentPSD);
+            switch (testIndex)
+                case 1 %no noise
+                    noisyEquipment = [];
+                case 2  %just some reasonable stuff, always running
+                    noisyEquipment = equipmentNoiseClass(locations(i,:),equipmentPSD);
+                case 3  %really LOUD, always running
+                    noisyEquipment = equipmentNoiseClass(locations(i,:),loudFieldPSD);
+                case 4 %loud, but intermittent
+                    noisyEquipment = equipmentNoiseClass(locations(i,:),loudFieldPSD,runtimes);
+            end
         end
     end
     %set up the store and forward tables
@@ -100,7 +84,7 @@ for combinedIndex = 1:(nReps*nMods)
         for j = 1:size(locations,1)
             d1 = norm(locations(j,:) - locations(repeaterIDs(i),:));
             if d1 > minRouteDistance
-                tab=[tab;j]; %#ok<AGROW> 
+                tab=[tab;j]; %#ok<AGROW>
             end
         end
         nodes{repeaterIDs(i)}.setStoreAndForwardTable(tab);
@@ -116,14 +100,12 @@ for combinedIndex = 1:(nReps*nMods)
     thisStats = analyzeSimulationResults(sentPacketInfo,receivedPacketInfo);
     fprintf(1,'Stats for %d relays:\n',numRepeaters);
     disp(thisStats);
-    overallStats{combinedIndex} = thisStats;
+    overallStats{testIndex} = thisStats;
 end
 %unwind stats
-completeStats = cell(nMods,nReps);
-for combinedIndex = 1:(nReps*nMods)
-    repIndex = 1+ rem(combinedIndex-1,nReps);
-    modulatorIndex = 1 + floor((combinedIndex-1)/nReps);
-    stats = overallStats{combinedIndex};
+completeStats = cell(nReps,1);
+for repIndex = 1:nReps
+    stats = overallStats{repIndex};
     stats.fractionLost = [stats.SMACnumMessagesLost/stats.SMACnumMessagesSent stats.SMACnumAckRequiredMessagesLost/stats.SMACnumAckRequiredMessages];
-    completeStats{modulatorIndex,repIndex} = stats;
+    completeStats{repIndex} = stats;
 end

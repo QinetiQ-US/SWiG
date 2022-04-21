@@ -74,6 +74,10 @@ classdef nodeClass < handle
         %> newSMACbandwidthFraction<br>
         %> state<br>
         SMACeventStructure;
+        %> max number of collisions during operation
+        maxCollisionsSoFar;
+        %> max number of preamble collisions during operation
+        maxPreambleCollisionsSoFar;
     end
 
     methods
@@ -111,6 +115,18 @@ classdef nodeClass < handle
                 ourChannelModel = reliableAcousticPathModel;
             end
             obj.channelModel = copy(ourChannelModel);
+            obj.maxCollisionsSoFar = 0;
+            obj.maxPreambleCollisionsSoFar = 0;
+        end
+
+        %> @brief get max collision values
+        %> @param [in] obj - node object
+        %> @retval maxCollisions - max number of packet collisions
+        %> @retval maxPreambleCollisions - max number of preamble
+        %>collisions
+        function [maxCollisions, maxPreambleCollisions] = maxCollisionValues(obj)
+            maxCollisions = obj.maxCollisionsSoFar;
+            maxPreambleCollisions = obj.maxPreambleCollisionsSoFar;
         end
 
         %> @brief get location of node
@@ -789,6 +805,8 @@ classdef nodeClass < handle
                 startTime = thisPacket.getPacketStart + ...
                     thisPacket.getPacketDelay;
                 endTime = startTime + thisPacket.getPacketDuration;
+                numCollisions = length(unfinishedPackets) - 1;  %how many collisions
+                obj.maxCollisionsSoFar = max(obj.maxCollisionsSoFar, numCollisions);
                 for j = 1:length(unfinishedPackets)
                     if (i ~= j) %packet can't interfere with itself
                         thatPacket = packets(unfinishedPackets(j));
@@ -806,18 +824,18 @@ classdef nodeClass < handle
                         interference = interference + thisInterference;
                     end
                 end
-                %convert interference to PSD
-                BW = packets(unfinishedPackets(i)).getModulator.getBandwidth;
-                interferencePSD = interference/BW;
                 %add in any equipment interference that exists
                 for equip = 1:length(equipmentNoiseObjects)
                     %get PSD of the radiator
                     F0 = thisPacket.getModulator.getCenterFrequency;
-                    PSD = equipmentNoiseObjects(equip).getPSD(F0);
+                    PSD = equipmentNoiseObjects(equip).getPSD(F0,time);
                     %get transmission loss
                     TL = obj.channelModel.transmissionLoss(equipmentNoiseObjects(equip).getLocation,obj.getLocation(time),F0);
                     interference = interference + 10^(0.1*(PSD-TL));
                 end
+                %convert interference to PSD
+                BW = packets(unfinishedPackets(i)).getModulator.getBandwidth;
+                interferencePSD = interference/BW;
                 %go get noise level
                 f = packets(unfinishedPackets(i)).getModulator.getCenterFrequency;
                 noiseLevel = 10^(0.1*obj.channelModel.noiseLevel(f));
@@ -841,6 +859,7 @@ classdef nodeClass < handle
             end
 
             %finally, see if there is a collision of preambles
+            preambleCollisions = 0;
             for i=1:length(packets)
                 pmodulator = packets(i).getModulator;
                 if pmodulator.isPreambleCollisionFatal
@@ -858,11 +877,13 @@ classdef nodeClass < handle
                             minEnd = min(endOfPreamble1,endOfPreamble2);
                             if maxStart <= minEnd  %we have some overlap
                                 validities(i) = false;
+                                preambleCollisions = preambleCollisions + 1;
                             end
                         end
                     end
                 end
             end
+            obj.maxPreambleCollisionsSoFar = max(obj.maxPreambleCollisionsSoFar, preambleCollisions);
         end
 
     end

@@ -96,6 +96,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a7e38d91ef25af2ef88af9419ec321187"><td class="memItemLeft" align="right" valign="top">function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnode_class.html#a7e38d91ef25af2ef88af9419ec321187">nodeClass</a> (in <a class="el" href="classnode_class.html#ac32e7d5a02b161eabe93d58f8125eebd">location</a>, in <a class="el" href="classnode_class.html#a06ffd45b63c8c79a0752b308d6852ef9">modulators</a>, in <a class="el" href="classnode_class.html#ac305f68c32f0ac065e806786abc6f1f1">ID</a>, in sendQueueDepth, in ourChannelModel)</td></tr>
 <tr class="memdesc:a7e38d91ef25af2ef88af9419ec321187"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classnode_class.html" title="node class">nodeClass</a> constructor  <a href="classnode_class.html#a7e38d91ef25af2ef88af9419ec321187">More...</a><br /></td></tr>
 <tr class="separator:a7e38d91ef25af2ef88af9419ec321187"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d00abf91c2de1c6d2c8da78fbb0461b"><td class="memItemLeft" align="right" valign="top">function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnode_class.html#a3d00abf91c2de1c6d2c8da78fbb0461b">maxCollisionValues</a> (in obj)</td></tr>
+<tr class="memdesc:a3d00abf91c2de1c6d2c8da78fbb0461b"><td class="mdescLeft">&#160;</td><td class="mdescRight">get max collision values  <a href="classnode_class.html#a3d00abf91c2de1c6d2c8da78fbb0461b">More...</a><br /></td></tr>
+<tr class="separator:a3d00abf91c2de1c6d2c8da78fbb0461b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c9000db34f20e667a3d0b2bc9496f8f"><td class="memItemLeft" align="right" valign="top">function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnode_class.html#a1c9000db34f20e667a3d0b2bc9496f8f">getLocation</a> (in obj, in time)</td></tr>
 <tr class="memdesc:a1c9000db34f20e667a3d0b2bc9496f8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">get location of node  <a href="classnode_class.html#a1c9000db34f20e667a3d0b2bc9496f8f">More...</a><br /></td></tr>
 <tr class="separator:a1c9000db34f20e667a3d0b2bc9496f8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -234,6 +237,12 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a2970427fc5e0dde3b1443e20c0e1362c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad48df63c4301d068ca15d1431c599520"><td class="memItemLeft" align="right" valign="top">Property&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnode_class.html#ad48df63c4301d068ca15d1431c599520">SMACeventStructure</a></td></tr>
 <tr class="separator:ad48df63c4301d068ca15d1431c599520"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e05c84e4b8c2c2eebd0c7c96b8b8947"><td class="memItemLeft" align="right" valign="top">Property&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnode_class.html#a5e05c84e4b8c2c2eebd0c7c96b8b8947">maxCollisionsSoFar</a></td></tr>
+<tr class="memdesc:a5e05c84e4b8c2c2eebd0c7c96b8b8947"><td class="mdescLeft">&#160;</td><td class="mdescRight">max number of collisions during operation  <a href="classnode_class.html#a5e05c84e4b8c2c2eebd0c7c96b8b8947">More...</a><br /></td></tr>
+<tr class="separator:a5e05c84e4b8c2c2eebd0c7c96b8b8947"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5e59e60bfe9552a24f43ec1cb6d30f9"><td class="memItemLeft" align="right" valign="top">Property&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnode_class.html#ae5e59e60bfe9552a24f43ec1cb6d30f9">maxPreambleCollisionsSoFar</a></td></tr>
+<tr class="memdesc:ae5e59e60bfe9552a24f43ec1cb6d30f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">max number of preamble collisions during operation  <a href="classnode_class.html#ae5e59e60bfe9552a24f43ec1cb6d30f9">More...</a><br /></td></tr>
+<tr class="separator:ae5e59e60bfe9552a24f43ec1cb6d30f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >node class </p>
@@ -805,6 +814,39 @@ Public Attributes</h2></td></tr>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">result</td><td>- boolean: am I sending? </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a3d00abf91c2de1c6d2c8da78fbb0461b" name="a3d00abf91c2de1c6d2c8da78fbb0461b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3d00abf91c2de1c6d2c8da78fbb0461b">&#9670;&nbsp;</a></span>maxCollisionValues()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">function nodeClass::maxCollisionValues </td>
+          <td>(</td>
+          <td class="paramtype">in&#160;</td>
+          <td class="paramname"><em>obj</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>get max collision values </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">obj</td><td>- node object </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">maxCollisions</td><td>- max number of packet collisions </td></tr>
+    <tr><td class="paramname">maxPreambleCollisions</td><td>- max number of preamble collisions </td></tr>
   </table>
   </dd>
 </dl>
@@ -1528,6 +1570,42 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a5e05c84e4b8c2c2eebd0c7c96b8b8947" name="a5e05c84e4b8c2c2eebd0c7c96b8b8947"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5e05c84e4b8c2c2eebd0c7c96b8b8947">&#9670;&nbsp;</a></span>maxCollisionsSoFar</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Property nodeClass::maxCollisionsSoFar</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>max number of collisions during operation </p>
+
+<p class="definition">Definition at line <a class="el" href="node_class_8m_source.html#l00106">106</a> of file <a class="el" href="node_class_8m_source.html">nodeClass.m</a>.</p>
+
+</div>
+</div>
+<a id="ae5e59e60bfe9552a24f43ec1cb6d30f9" name="ae5e59e60bfe9552a24f43ec1cb6d30f9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae5e59e60bfe9552a24f43ec1cb6d30f9">&#9670;&nbsp;</a></span>maxPreambleCollisionsSoFar</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Property nodeClass::maxPreambleCollisionsSoFar</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>max number of preamble collisions during operation </p>
+
+<p class="definition">Definition at line <a class="el" href="node_class_8m_source.html#l00109">109</a> of file <a class="el" href="node_class_8m_source.html">nodeClass.m</a>.</p>
+
+</div>
+</div>
 <a id="acce8e66edf96d49b8db5f7416cf75618" name="acce8e66edf96d49b8db5f7416cf75618"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acce8e66edf96d49b8db5f7416cf75618">&#9670;&nbsp;</a></span>meshRouteTable</h2>
 
@@ -1858,7 +1936,7 @@ Public Attributes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 20 2022 18:00:26 for SWiG Protocol Simulation Tools by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3
+Generated on Thu Apr 21 2022 17:36:42 for SWiG Protocol Simulation Tools by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3
 </small></address>
 </body>
 </html>

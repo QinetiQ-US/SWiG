@@ -24,7 +24,7 @@ var searchData=
   ['getpacketlength_21',['getPacketLength',['../classmodulator_class.html#ad69243c5f42e019e6f90985ae624c5b8',1,'modulatorClass']]],
   ['getpacketstart_22',['getPacketStart',['../classpacket_class.html#ab9f9687a1ab35b9d29059edc1269502a',1,'packetClass']]],
   ['getpreambleduration_23',['getPreambleDuration',['../classmodulator_class.html#aac32768e470a65cfa84c391e81b6eded',1,'modulatorClass']]],
-  ['getpsd_24',['getPSD',['../classequipment_noise_class.html#a476c976245e7845c7db424f2b5b1237d',1,'equipmentNoiseClass']]],
+  ['getpsd_24',['getPSD',['../classequipment_noise_class.html#aecf155e08dcfebf9812fe909df0ce2ea',1,'equipmentNoiseClass']]],
   ['getresponserequired_25',['getResponseRequired',['../classpacket_class.html#ad741da015867865f0ea3351e18a14240',1,'packetClass']]],
   ['getsignallevel_26',['getSignalLevel',['../classpacket_class.html#adcc8265ac9c8e9dd3e8944a1b90a6b50',1,'packetClass']]],
   ['getsignalpower_27',['getSignalPower',['../classmodulator_class.html#a0c3ddda176f3d6c01f041d627feed6fb',1,'modulatorClass']]],
